@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* Output/Targets */
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+
+    /* Module/Bundler mode (Vite) */
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+
+    /* Decorators (MobX + InversifyJS) */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+
+    /* Type Checking / Lint-ish */
+    "strict": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    /* Node types for vite.config.ts */
+    "types": ["node"],
+    /* Module resolution aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "Common/*": ["src/common/*"],
+      "Modules/*": ["src/modules/*"],
+      "Assets/*": ["src/assets/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "postcss.config.*", "eslint.config.*", "scripts/**/*.*"]
+}

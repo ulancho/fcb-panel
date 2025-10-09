@@ -1,0 +1,110 @@
+/* src/styles/tailwind.css — Tailwind v4 way */
+@import "tailwindcss";
+
+/* Где искать классы (аналог content) — подгони под свой проект */
+@source "./**/*.{ts,tsx,js,jsx,html}";
+
+/* ===== Theme / tokens (аналог theme + extend) ===== */
+@theme {
+    /* Шрифты: дают классы font-inter / font-montserrat */
+    --font-inter: Inter, sans-serif;
+    --font-montserrat: Montserrat, sans-serif;
+
+    /* Радиусы */
+    --radius: 0.5rem; /* подставь своё базовое значение при необходимости */
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    /* Цвета по твоим переменным (hsl(var(--...))) */
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+
+    --color-card: hsl(var(--card));
+    --color-card-foreground: hsl(var(--card-foreground));
+
+    /* sidebar.* раскладываем в плоские токены */
+    --color-sidebar: hsl(var(--sidebar-background));
+    --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+    --color-sidebar-primary: hsl(var(--sidebar-primary));
+    --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+    --color-sidebar-accent: hsl(var(--sidebar-accent));
+    --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+    --color-sidebar-border: hsl(var(--sidebar-border));
+    --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+    /* Твои дополнительные цвета */
+    --color-brand-red: hsl(var(--brand-red));
+    --color-brand-red-dark: hsl(var(--brand-red-dark));
+    --color-text-black: hsl(var(--text-black));
+    --color-text-gray: hsl(var(--text-gray));
+    --color-bg-gray: hsl(var(--bg-gray));
+    --color-border-gray: hsl(var(--border-gray));
+
+    /* Контейнер (аналог theme.container) */
+    --container-padding: 2rem;
+    --container-2xl: 1400px; /* для брейкпоинта 2xl */
+}
+
+/* ===== Keyframes из config.keyframes ===== */
+@keyframes accordion-down {
+    from { height: 0 }
+    to   { height: var(--radix-accordion-content-height) }
+}
+@keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height) }
+    to   { height: 0 }
+}
+
+/* ===== Utilities под анимации (аналог extend.animation) ===== */
+@utility animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+@utility animate-accordion-up   { animation: accordion-up 0.2s ease-out; }
+
+/* ===== Контейнер (центр + padding + max-width на 2xl) ===== */
+@utility container {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+}
+@media (min-width: 1536px) { /* 2xl */
+    .container { max-width: var(--container-2xl); }
+}
+
+/* ===== База для темы и тёмного режима ===== */
+/* darkMode:"class" ⇒ просто ставь class="dark" на <html> */
+:root {
+    /* пример дефолтов — оставь, либо замени своими значениями */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+}
+.dark {
+    --background: 222 47% 6%;
+    --foreground: 0 0% 98%;
+}
+
+/* Базовая раскраска страницы + шрифт по умолчанию */
+body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter);
+}
