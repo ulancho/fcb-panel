@@ -1,13 +1,15 @@
 import { resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 const srcDir = fileURLToPath(new URL('./src', import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [tailwindcss(), react()],
+
   resolve: {
     alias: {
       '@': srcDir,
@@ -17,14 +19,5 @@ export default defineConfig({
     },
     extensions: ['.tsx', '.ts', '.js'],
     preserveSymlinks: false,
-  },
-  server: {
-    proxy: {
-      '/svc-biz-ib-cbk-mbank-id-auth': {
-        target: 'https://preprodib.mbank.kg',
-        changeOrigin: true,
-        secure: true,
-      },
-    },
-  },
+  }
 });

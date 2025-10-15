@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import AppWrapper from './app/AppWrapper.tsx';
 import './styles/tailwind.css';
-import './styles/global.css'
+import './styles/global.css';
 
 configure({
   enforceActions: 'observed',

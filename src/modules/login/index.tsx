@@ -1,9 +1,46 @@
-export default function Login() {
+import { observer } from 'mobx-react-lite';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+
+import { useLoginStore } from 'Common/stores/rootStore.tsx';
+
+const Login = observer(() => {
+  const loginStore = useLoginStore();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void loginStore.login(username, password);
+  };
+
+  const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+
+    if (loginStore.error) {
+      loginStore.clearError();
+    }
+  };
+
+  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+
+    if (loginStore.error) {
+      loginStore.clearError();
+    }
+  };
+
+  const isSubmitting = loginStore.isLoading;
+  const errorMessage = loginStore.error;
+  const loginResponse = loginStore.response;
+  const isSubmitDisabled = isSubmitting || !username.trim() || !password.trim();
+
   return (
     <div className="min-h-screen w-full bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-[452px] flex flex-col items-center gap-7">
-        {/* Logo and Brand Name */}
-        <div className="flex flex-col items-center gap-[18px] w-[216px]">
+        <div
+          className="flex flex-col items-center gap-[18px] w-[216px]"
+          style={{ display: 'none' }}
+        >
           <svg
             className="w-[132.83px] h-[126.868px]"
             width="134"
@@ -29,7 +66,7 @@ export default function Login() {
             Вход
           </h2>
 
-          <div className="w-full flex flex-col items-end gap-5">
+          <form className="w-full flex flex-col items-end gap-5" onSubmit={handleSubmit}>
             {/* ФИО Input */}
             <div className="w-full flex flex-col items-start gap-2">
               <label className="text-[#23262F] font-montserrat text-[14px] font-medium leading-[100%]">
@@ -38,8 +75,13 @@ export default function Login() {
               <div className="w-full h-12 flex flex-col justify-center items-start rounded-[5px]">
                 <input
                   type="text"
+                  name="username"
+                  value={username}
+                  onChange={handleUsernameChange}
                   placeholder="Введите ваше ФИО"
-                  className="w-full h-full px-4 py-4 rounded-xl border border-[#D7D7D7] bg-[#F2F2F2] text-[#23262F] placeholder:text-[#9B9B9B] font-montserrat text-base leading-[100%] outline-none focus:border-[#B50000] transition-colors"
+                  autoComplete="username"
+                  className="w-full h-full px-4 py-4 rounded-xl border border-[#D7D7D7] bg-[#F2F2F2] text-[#23262F] placeholder:text-[#9B9B9B] font-montserrat text-base leading-[100%] outline-none focus:border-[#B50000] transition-colors disabled:opacity-60"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -52,21 +94,48 @@ export default function Login() {
               <div className="w-full h-12 flex flex-col justify-center items-start rounded-[5px]">
                 <input
                   type="password"
+                  name="password"
+                  value={password}
+                  onChange={handlePasswordChange}
                   placeholder="Введите ваш пароль"
-                  className="w-full h-full px-4 py-4 rounded-xl border border-[#D7D7D7] bg-[#F2F2F2] text-[#23262F] placeholder:text-[#9B9B9B] font-montserrat text-base leading-[100%] outline-none focus:border-[#B50000] transition-colors"
+                  autoComplete="current-password"
+                  className="w-full h-full px-4 py-4 rounded-xl border border-[#D7D7D7] bg-[#F2F2F2] text-[#23262F] placeholder:text-[#9B9B9B] font-montserrat text-base leading-[100%] outline-none focus:border-[#B50000] transition-colors disabled:opacity-60"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
-          </div>
 
-          {/* Login Button */}
-          <button className="w-full h-12 px-[22px] py-4 flex justify-center items-center gap-2 rounded-xl bg-[#B50000] hover:bg-[#9a0000] active:bg-[#B50000] transition-colors">
-            <span className="text-white font-montserrat text-[14px] font-medium leading-[100%]">
-              Войти
-            </span>
-          </button>
+            {errorMessage && (
+              <p
+                className="w-full text-left text-[#B50000] font-montserrat text-sm leading-[120%]"
+                role="alert"
+              >
+                {errorMessage}
+              </p>
+            )}
+            {loginResponse && !errorMessage && (
+              <p
+                className="w-full text-left text-[#0B8F24] font-montserrat text-sm leading-[120%]"
+                role="status"
+              >
+                Вход выполнен успешно.
+              </p>
+            )}
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="w-full h-12 px-[22px] py-4 flex justify-center items-center gap-2 rounded-xl bg-[#B50000] hover:bg-[#9a0000] active:bg-[#B50000] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={isSubmitDisabled}
+            >
+              <span className="text-white font-montserrat text-[14px] font-medium leading-[100%]">
+                {isSubmitting ? 'Входим…' : 'Войти'}
+              </span>
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
-}
+});
+
+export default Login;
