@@ -1,16 +1,22 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
-import Registration from 'Modules/clients/registration';
+import Cabinet from 'Common/components/cabinet';
 import Login from 'Modules/login';
 
 function App() {
+  const isLoggedIn = true;
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/client/registration" element={<Registration />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      {isLoggedIn && <Cabinet />}
+      {!isLoggedIn && (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+          </Routes>
+        </BrowserRouter>
+      )}
+    </>
   );
 }
 
