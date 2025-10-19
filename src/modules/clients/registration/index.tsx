@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite';
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
 
 const Registration = observer(() => {
   const [id, setId] = useState('');
   const customerStore = useCustomerStore();
-
+  const navigate = useNavigate();
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void customerStore.loadCustomerById(id);
@@ -27,6 +28,12 @@ const Registration = observer(() => {
   const error = customerStore.error;
   const customer = customerStore.customer;
   const isSubmitDisabled = isLoading || !id.trim();
+
+  useEffect(() => {
+    if (customer) {
+      navigate('/client/registration-form');
+    }
+  }, [customer, navigate]);
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">
@@ -81,11 +88,6 @@ const Registration = observer(() => {
           <div className="flex flex-col gap-3 text-sm text-[#232323]">
             {isLoading && <div>Загрузка данных клиента...</div>}
             {error && <div className="text-[#B50000]">{error}</div>}
-            {customer && !isLoading && (
-              <pre className="max-h-64 overflow-auto rounded-xl bg-[#F5F5F5] p-4 text-xs leading-tight">
-                {JSON.stringify(customer, null, 2)}
-              </pre>
-            )}
           </div>
         </form>
       </div>

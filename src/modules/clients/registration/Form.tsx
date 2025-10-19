@@ -1,19 +1,59 @@
-import { useRef, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useRef, useState } from 'react';
 
-export default function Form() {
+import { useCustomerStore } from 'Common/stores/rootStore.tsx';
+
+import type { CustomerResponse } from 'Modules/clients/registration/api/customerApi.ts';
+
+type FormDataState = {
+  residencyStatus: string;
+  firstName: string;
+  inn: string;
+  lastName: string;
+  phone: string;
+  patronymic: string;
+  email: string;
+  birthDate: string;
+};
+
+const DEFAULT_FORM_DATA: FormDataState = {
+  residencyStatus: 'Резидент/не резидент',
+  firstName: '',
+  inn: '',
+  lastName: '',
+  phone: '',
+  patronymic: '',
+  email: '',
+  birthDate: '',
+};
+
+const mapCustomerToFormData = (customer: CustomerResponse | null): Partial<FormDataState> => ({
+  firstName: customer?.name ?? '',
+  inn: customer?.inn ?? '',
+  lastName: customer?.surname ?? '',
+  phone: customer?.phoneNumber ?? '',
+  patronymic: customer?.patronymic ?? '',
+  email: customer?.email ?? '',
+});
+
+const Form = observer(() => {
+  const customerStore = useCustomerStore();
+  const customer = customerStore.customer;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [formData, setFormData] = useState({
-    residencyStatus: 'Резидент/не резидент',
-    firstName: 'Айсулуу',
-    inn: 'ИНН 0000000',
-    lastName: 'Тыныбекова',
-    phone: '+996 755 220 555',
-    patronymic: 'Болотовна',
-    email: '+996 755 220 555',
-    birthDate: '12.02.2001',
-  });
+  const [formData, setFormData] = useState<FormDataState>(() => ({
+    ...DEFAULT_FORM_DATA,
+    ...mapCustomerToFormData(customer),
+  }));
 
+  useEffect(() => {
+    if (customer) {
+      setFormData((prev) => ({
+        ...prev,
+        ...mapCustomerToFormData(customer),
+      }));
+    }
+  }, [customer]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
@@ -239,4 +279,6 @@ export default function Form() {
       </div>
     </div>
   );
-}
+});
+
+export default Form;
