@@ -1,10 +1,12 @@
 import { toJS } from 'mobx';
 import { createContext, type ReactNode, useContext } from 'react';
 
+import { CustomerService } from 'Modules/clients/registration/services/customerService.ts';
 import { LoginService } from 'Modules/login/services/loginService.ts';
 
 class RootStore {
   readonly loginStore = new LoginService();
+  readonly customerStore = new CustomerService();
 }
 
 const rootStore = new RootStore();
@@ -27,4 +29,8 @@ export function useRootStore() {
 
 export function useLoginStore() {
   return useRootStore().loginStore;
+}
+
+export function useCustomerStore() {
+  return useRootStore().customerStore;
 }

@@ -1,12 +1,32 @@
-import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
-export default function Registration() {
+import { useCustomerStore } from 'Common/stores/rootStore.tsx';
+
+const Registration = observer(() => {
   const [id, setId] = useState('');
+  const customerStore = useCustomerStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Submitted:', id);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void customerStore.loadCustomerById(id);
   };
+
+  const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setId(event.target.value);
+    if (customerStore.error) {
+      customerStore.clearError();
+    }
+
+    if (customerStore.customer) {
+      customerStore.clearCustomer();
+    }
+  };
+
+  const isLoading = customerStore.isLoading;
+  const error = customerStore.error;
+  const customer = customerStore.customer;
+  const isSubmitDisabled = isLoading || !id.trim();
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">
@@ -44,7 +64,7 @@ export default function Registration() {
                 id="id"
                 type="text"
                 value={id}
-                onChange={(e) => setId(e.target.value)}
+                onChange={handleIdChange}
                 placeholder="ID"
                 className="w-full h-12 px-4 rounded-xl border border-[#D7D7D7] bg-[#FCFCFC] text-[#232323] text-base leading-[100%] placeholder:text-[#232323] focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent"
               />
@@ -53,12 +73,24 @@ export default function Registration() {
 
           <button
             type="submit"
+            disabled={isSubmitDisabled}
             className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-[#B50000] text-white text-sm font-medium leading-[100%] hover:bg-[#9B0000] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
           >
             Подтвердить
           </button>
+          <div className="flex flex-col gap-3 text-sm text-[#232323]">
+            {isLoading && <div>Загрузка данных клиента...</div>}
+            {error && <div className="text-[#B50000]">{error}</div>}
+            {customer && !isLoading && (
+              <pre className="max-h-64 overflow-auto rounded-xl bg-[#F5F5F5] p-4 text-xs leading-tight">
+                {JSON.stringify(customer, null, 2)}
+              </pre>
+            )}
+          </div>
         </form>
       </div>
     </div>
   );
-}
+});
+
+export default Registration;
