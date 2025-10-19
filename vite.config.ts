@@ -19,5 +19,14 @@ export default defineConfig({
     },
     extensions: ['.tsx', '.ts', '.js'],
     preserveSymlinks: false,
-  }
+  },
+  server: {
+    proxy: {
+      '/admin-panel': {
+        target: 'https://mobile-test.fkb.kg',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 });
