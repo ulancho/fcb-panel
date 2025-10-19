@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
 export default function Registration() {
-  const [passportId, setPassportId] = useState('');
+  const [id, setId] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Submitted:', passportId);
+    console.log('Submitted:', id);
   };
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-[553px] bg-white rounded-[24px] p-6 md:p-9 flex flex-col items-center gap-7 shadow-sm">
+      <div className="w-full max-w-[553px] p-6 md:p-9 flex flex-col items-center gap-7">
         <div className="flex flex-col items-center gap-4.5">
           <svg
             className="w-[133px] h-[127px]"
@@ -36,16 +36,16 @@ export default function Registration() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="passport" className="text-[#23262F] text-sm font-medium leading-[100%]">
-              Серия и номер паспорта
+            <label htmlFor="id" className="text-[#23262F] text-sm font-medium leading-[100%]">
+              ABC ID
             </label>
             <div className="relative">
               <input
-                id="passport"
+                id="id"
                 type="text"
-                value={passportId}
-                onChange={(e) => setPassportId(e.target.value)}
-                placeholder="ID 0000000"
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+                placeholder="ID"
                 className="w-full h-12 px-4 rounded-xl border border-[#D7D7D7] bg-[#FCFCFC] text-[#232323] text-base leading-[100%] placeholder:text-[#232323] focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent"
               />
             </div>
@@ -53,7 +53,7 @@ export default function Registration() {
 
           <button
             type="submit"
-            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-[#B50000] text-white text-sm font-medium leading-[100%] hover:bg-[#9B0000] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2"
+            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-[#B50000] text-white text-sm font-medium leading-[100%] hover:bg-[#9B0000] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
           >
             Подтвердить
           </button>
