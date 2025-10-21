@@ -1,6 +1,8 @@
 import { isAxiosError } from 'axios';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
+import { saveLoginResponseTokens } from 'Common/auth/tokenStorage.ts';
+
 import { sendLoginRequest, type LoginRequestPayload, type LoginResponse } from '../api/loginApi.ts';
 
 export class LoginService {
@@ -36,6 +38,8 @@ export class LoginService {
 
     try {
       const response = await this.loginRequester(payload);
+
+      saveLoginResponseTokens(response);
 
       runInAction(() => {
         this.loginResponse = response;
