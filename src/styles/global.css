@@ -80,6 +80,7 @@
 @layer base {
     * {
         border-color: hsl(var(--border));
+        font-family: Montserrat, system-ui, -apple-system, Roboto, sans-serif;
     }
 
     body {
