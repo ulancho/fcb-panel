@@ -7,16 +7,14 @@ function App() {
   const isLoggedIn = true;
 
   return (
-    <>
+    <BrowserRouter>
       {isLoggedIn && <Cabinet />}
       {!isLoggedIn && (
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+        </Routes>
       )}
-    </>
+    </BrowserRouter>
   );
 }
 
