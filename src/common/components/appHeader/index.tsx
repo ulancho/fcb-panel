@@ -6,7 +6,11 @@ export function Header() {
   };
 
   return (
-    <header className="w-full h-[54px] bg-[#F9F9F9] border-b border-[#D7D7D7] flex items-center px-10">
+    <header className="w-full h-[59px] bg-[#fff] border-b border-[#D7D7D7] flex items-center px-10">
+      <div className="mr-auto flex gap-2.5 items-center">
+        <img src="/src/assets/logo.svg" alt="logo" />
+        <p>ФинансКредитБанк</p>
+      </div>
       <div className="ml-auto">
         <button
           onClick={handleLogout}
@@ -14,7 +18,6 @@ export function Header() {
           aria-label="Logout"
         >
           <LogOut className="w-4 h-4" />
-          Выход
         </button>
       </div>
     </header>

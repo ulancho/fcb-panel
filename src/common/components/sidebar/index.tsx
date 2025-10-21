@@ -29,7 +29,7 @@ const menuItems: MenuItem[] = [
 
 export function Sidebar() {
   return (
-    <div className="w-[268px] min-h-screen bg-[#FCFCFC] flex flex-col pt-5 pb-3">
+    <div className="w-[268px] min-h-screen bg-[#fff] flex flex-col pt-5 pb-3">
       <nav className="flex flex-col gap-7 px-0">
         {menuItems.map((item) => (
           <Link key={item.id} to={item.path} prefetch="intent">
