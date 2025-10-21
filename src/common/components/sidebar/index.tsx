@@ -17,6 +17,7 @@ const menuItems: MenuItem[] = [
     label: 'Главная страница',
     icon: <LayoutDashboard className="w-5 h-5" />,
     path: '',
+    active: true,
   },
   {
     id: 'registration',
