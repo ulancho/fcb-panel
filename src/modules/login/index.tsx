@@ -1,9 +1,11 @@
 import { observer } from 'mobx-react-lite';
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useLoginStore } from 'Common/stores/rootStore.tsx';
 
 const Login = observer(() => {
+  const navigate = useNavigate();
   const loginStore = useLoginStore();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -34,13 +36,16 @@ const Login = observer(() => {
   const loginResponse = loginStore.response;
   const isSubmitDisabled = isSubmitting || !username.trim() || !password.trim();
 
+  useEffect(() => {
+    if (loginResponse && !errorMessage) {
+      navigate('/client/registration', { replace: true });
+    }
+  }, [errorMessage, loginResponse, navigate]);
+
   return (
     <div className="min-h-screen w-full bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-[452px] flex flex-col items-center gap-7">
-        <div
-          className="flex flex-col items-center gap-[18px] w-[216px]"
-          style={{ display: 'none' }}
-        >
+        <div className="flex flex-col items-center gap-[18px] w-[216px]">
           <svg
             className="w-[132.83px] h-[126.868px]"
             width="134"

@@ -1,17 +1,26 @@
 import { isAxiosError } from 'axios';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import { saveLoginResponseTokens } from 'Common/auth/tokenStorage.ts';
+import { getAccessToken, saveLoginResponseTokens } from 'Common/auth/tokenStorage.ts';
 
 import { sendLoginRequest, type LoginRequestPayload, type LoginResponse } from '../api/loginApi.ts';
 
 export class LoginService {
   @observable private isSubmitting = false;
+  @observable private isLoggedIn = false;
   @observable private submitError: string | null = null;
   @observable private loginResponse: LoginResponse | null = null;
 
   constructor(private readonly loginRequester: typeof sendLoginRequest = sendLoginRequest) {
     makeObservable(this);
+    const token = getAccessToken();
+    const isLoggedIn = token !== null;
+
+    if (isLoggedIn) {
+      runInAction(() => {
+        this.isLoggedIn = true;
+      });
+    }
   }
 
   @action
@@ -29,12 +38,14 @@ export class LoginService {
     if (!payload.username || !payload.password) {
       this.submitError = 'Введите логин и пароль';
       this.loginResponse = null;
+      this.isLoggedIn = false;
       return;
     }
 
     this.isSubmitting = true;
     this.submitError = null;
     this.loginResponse = null;
+    this.isLoggedIn = false;
 
     try {
       const response = await this.loginRequester(payload);
@@ -43,6 +54,7 @@ export class LoginService {
 
       runInAction(() => {
         this.loginResponse = response;
+        this.isLoggedIn = true;
       });
     } catch (error) {
       let message = 'Не удалось выполнить вход.';
@@ -84,5 +96,10 @@ export class LoginService {
   @computed
   get response(): LoginResponse | null {
     return this.loginResponse;
+  }
+
+  @computed
+  get isLogged(): boolean {
+    return this.isLoggedIn;
   }
 }

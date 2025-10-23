@@ -1,10 +1,13 @@
+import { observer } from 'mobx-react-lite';
 import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 
 import Cabinet from 'Common/components/cabinet';
+import { useLoginStore } from 'Common/stores/rootStore.tsx';
 import Login from 'Modules/login';
 
-function App() {
-  const isLoggedIn = false;
+const App = observer(() => {
+  const loginService = useLoginStore();
+  const isLoggedIn = loginService.isLogged;
 
   return (
     <BrowserRouter>
@@ -17,6 +20,6 @@ function App() {
       )}
     </BrowserRouter>
   );
-}
+});
 
 export default App;
