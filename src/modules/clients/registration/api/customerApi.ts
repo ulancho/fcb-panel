@@ -15,11 +15,17 @@ export interface CustomerResponse {
   documentNo: string;
 }
 
+export interface RegisterCustomerPayload {
+  customerId: string;
+  email: string;
+  phoneNumber: string;
+}
+
 const DEFAULT_CUSTOMER_API_BASE_URL = 'https://mobile-test.fkb.kg/admin-panel/api/v1';
 
 const customerClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? DEFAULT_CUSTOMER_API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 customerClient.interceptors.request.use((config) => {
@@ -45,4 +51,13 @@ export async function fetchCustomerById(id: string): Promise<CustomerResponse> {
   });
 
   return data;
+}
+
+export async function registerCustomer(payload: RegisterCustomerPayload): Promise<void> {
+  await customerClient.post('/customer/register', payload, {
+    headers: {
+      accept: '*/*',
+      'Content-Type': 'application/json',
+    },
+  });
 }

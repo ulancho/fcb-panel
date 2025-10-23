@@ -54,9 +54,15 @@ const Form = observer(() => {
       }));
     }
   }, [customer]);
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    try {
+      await customerStore.registerCustomer(formData.email, formData.phone);
+      console.log('Form submitted:', formData);
+    } catch (error) {
+      console.error('Failed to register customer', error);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -271,7 +277,7 @@ const Form = observer(() => {
 
           <button
             type="submit"
-            className="w-full h-12 px-6 flex items-center justify-center gap-2 bg-[#B50000] hover:bg-[#9a0000] active:bg-[#8a0000] rounded-xl font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2"
+            className="w-full h-12 px-6 flex items-center justify-center gap-2 bg-[#B50000] hover:bg-[#9a0000] active:bg-[#8a0000] rounded-xl font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
           >
             Подтвердить
           </button>

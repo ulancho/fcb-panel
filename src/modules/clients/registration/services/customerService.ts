@@ -1,7 +1,11 @@
 import { isAxiosError } from 'axios';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import { fetchCustomerById, type CustomerResponse } from '../api/customerApi.ts';
+import {
+  fetchCustomerById,
+  type CustomerResponse,
+  registerCustomer as registerCustomerRequest,
+} from '../api/customerApi.ts';
 
 const EMPTY_ID_MESSAGE = 'Введите идентификатор клиента.';
 const DEFAULT_ERROR_MESSAGE = 'Не удалось получить данные клиента.';
@@ -11,7 +15,10 @@ export class CustomerService {
   @observable private loading = false;
   @observable private errorMessage: string | null = null;
 
-  constructor(private readonly customerFetcher: typeof fetchCustomerById = fetchCustomerById) {
+  constructor(
+    private readonly customerFetcher: typeof fetchCustomerById = fetchCustomerById,
+    private readonly customerRegistrar: typeof registerCustomerRequest = registerCustomerRequest,
+  ) {
     makeObservable(this);
   }
 
@@ -84,5 +91,20 @@ export class CustomerService {
   @computed
   get error(): string | null {
     return this.errorMessage;
+  }
+
+  @action
+  async registerCustomer(email: string, phoneNumber: string) {
+    const customerId = this.customerData?.customerId;
+
+    if (customerId == null) {
+      throw new Error('Customer ID is not available.');
+    }
+
+    await this.customerRegistrar({
+      customerId: String(customerId),
+      email: email.trim(),
+      phoneNumber: phoneNumber.trim(),
+    });
   }
 }
