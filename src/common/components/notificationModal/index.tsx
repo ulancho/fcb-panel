@@ -26,7 +26,7 @@ export const NotificationModal: FC<NotificationModalProps> = ({ type, message, o
       <button
         type="button"
         onClick={onClose}
-        className={`mt-6 w-full rounded-xl px-4 py-2 font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 ${
+        className={`mt-6 w-full rounded-xl px-4 py-2 font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 cursor-pointer ${
           BUTTON_COLOR[type]
         }`}
       >

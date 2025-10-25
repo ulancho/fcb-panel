@@ -18,7 +18,7 @@ type FormDataState = {
 };
 
 const DEFAULT_FORM_DATA: FormDataState = {
-  residencyStatus: 'Резидент/не резидент',
+  residencyStatus: 'Резидент/Не резидент',
   firstName: '',
   inn: '',
   lastName: '',
@@ -178,12 +178,12 @@ const Form = observer(() => {
                     <button
                       type="button"
                       onClick={() => {
-                        handleInputChange('residencyStatus', 'не резидент');
+                        handleInputChange('residencyStatus', 'Не резидент');
                         setIsOpen(false);
                       }}
                       className="w-full px-4 py-3 text-left font-montserrat text-base font-normal text-[#232323] hover:bg-[#B50000]/10 active:bg-[#B50000]/20 transition-colors flex items-center gap-2 border-t border-[#D7D7D7]"
                     >
-                      {formData.residencyStatus === 'не резидент' && (
+                      {formData.residencyStatus === 'Не резидент' && (
                         <svg
                           className="w-5 h-5 text-[#B50000]"
                           fill="currentColor"
@@ -196,7 +196,7 @@ const Form = observer(() => {
                           />
                         </svg>
                       )}
-                      <span>не резидент</span>
+                      <span>Не резидент</span>
                     </button>
                   </div>
                 )}
@@ -207,6 +207,7 @@ const Form = observer(() => {
               <label className="font-montserrat text-sm font-normal text-[#23262F]">Имя</label>
               <div className="relative">
                 <input
+                  readOnly
                   type="text"
                   value={formData.firstName}
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -219,6 +220,7 @@ const Form = observer(() => {
               <label className="font-montserrat text-sm font-normal text-[#23262F]">ИНН</label>
               <div className="relative">
                 <input
+                  readOnly
                   type="text"
                   value={formData.inn}
                   onChange={(e) => handleInputChange('inn', e.target.value)}
@@ -231,6 +233,7 @@ const Form = observer(() => {
               <label className="font-montserrat text-sm font-normal text-[#23262F]">Фамилия</label>
               <div className="relative">
                 <input
+                  readOnly
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
@@ -260,6 +263,7 @@ const Form = observer(() => {
               <label className="font-montserrat text-sm font-normal text-[#23262F]">Отчество</label>
               <div className="relative">
                 <input
+                  readOnly
                   type="text"
                   value={formData.patronymic}
                   onChange={(e) => handleInputChange('patronymic', e.target.value)}

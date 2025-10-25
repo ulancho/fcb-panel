@@ -129,7 +129,7 @@ const Login = observer(() => {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full h-12 px-[22px] py-4 flex justify-center items-center gap-2 rounded-xl bg-[#B50000] hover:bg-[#9a0000] active:bg-[#B50000] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className=" cursor-pointer w-full h-12 px-[22px] py-4 flex justify-center items-center gap-2 rounded-xl bg-[#B50000] hover:bg-[#9a0000] active:bg-[#B50000] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={isSubmitDisabled}
             >
               <span className="text-white font-montserrat text-[14px] font-medium leading-[100%]">
