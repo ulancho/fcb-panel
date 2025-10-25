@@ -7,6 +7,7 @@ import {
   registerCustomer as registerCustomerRequest,
 } from '../api/customerApi.ts';
 
+const CUSTOMER_STORAGE_KEY = 'customer-store/customer';
 const EMPTY_ID_MESSAGE = 'Введите идентификатор клиента.';
 const DEFAULT_ERROR_MESSAGE = 'Не удалось получить данные клиента.';
 
@@ -20,6 +21,7 @@ export class CustomerService {
     private readonly customerRegistrar: typeof registerCustomerRequest = registerCustomerRequest,
   ) {
     makeObservable(this);
+    this.hydrateCustomer();
   }
 
   @action
@@ -30,6 +32,7 @@ export class CustomerService {
   @action
   clearCustomer() {
     this.customerData = null;
+    this.persistCustomer();
   }
 
   @action
@@ -39,18 +42,21 @@ export class CustomerService {
     if (!trimmedId) {
       this.errorMessage = EMPTY_ID_MESSAGE;
       this.customerData = null;
+      this.persistCustomer();
       return;
     }
 
     this.loading = true;
     this.errorMessage = null;
     this.customerData = null;
+    this.persistCustomer();
 
     try {
       const customer = await this.customerFetcher(trimmedId);
 
       runInAction(() => {
         this.customerData = customer;
+        this.persistCustomer();
       });
     } catch (error) {
       let message = DEFAULT_ERROR_MESSAGE;
@@ -70,6 +76,7 @@ export class CustomerService {
       runInAction(() => {
         this.errorMessage = message;
         this.customerData = null;
+        this.persistCustomer();
       });
     } finally {
       runInAction(() => {
@@ -106,5 +113,43 @@ export class CustomerService {
       email: email.trim(),
       phoneNumber: phoneNumber.trim(),
     });
+  }
+
+  private hydrateCustomer() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const rawCustomer = window.localStorage.getItem(CUSTOMER_STORAGE_KEY);
+
+    if (!rawCustomer) {
+      return;
+    }
+
+    try {
+      const storedCustomer = JSON.parse(rawCustomer) as CustomerResponse;
+
+      runInAction(() => {
+        this.customerData = storedCustomer;
+      });
+    } catch (error) {
+      window.localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to parse stored customer data', error);
+      }
+    }
+  }
+
+  private persistCustomer() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (this.customerData) {
+      window.localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(this.customerData));
+    } else {
+      window.localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+    }
   }
 }

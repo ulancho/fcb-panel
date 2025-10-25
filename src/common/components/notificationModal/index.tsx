@@ -35,5 +35,3 @@ export const NotificationModal: FC<NotificationModalProps> = ({ type, message, o
     </div>
   </div>
 );
-
-export default NotificationModal;

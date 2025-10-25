@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
-import NotificationModal from 'Common/components/notificationModal';
+import { NotificationModal } from 'Common/components/notificationModal';
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
 
 import type { CustomerResponse } from 'Modules/clients/registration/api/customerApi.ts';
