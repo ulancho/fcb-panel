@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
+import NotificationModal from 'Common/components/notificationModal';
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
 
 import type { CustomerResponse } from 'Modules/clients/registration/api/customerApi.ts';
@@ -103,28 +104,11 @@ const Form = observer(() => {
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">
       {notification && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div
-            role="alertdialog"
-            aria-modal="true"
-            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex-1">
-                <p className="mt-2 font-inter text-sm text-[#4B4B4B] text-center">
-                  {notification.message}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setNotification(null)}
-              className="mt-6 w-full rounded-xl bg-[#B50000] px-4 py-2 font-montserrat text-sm font-medium text-white transition-colors hover:bg-[#8F0000] focus:outline-none focus:ring-2 focus:ring-[#B50000]/40"
-            >
-              Закрыть
-            </button>
-          </div>
-        </div>
+        <NotificationModal
+          type={notification.type}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
       )}
       <div className="w-full max-w-[830px] p-6 sm:p-9 flex flex-col items-center gap-7">
         <div className="flex flex-col items-center gap-2 text-center">
