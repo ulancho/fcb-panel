@@ -41,6 +41,10 @@ const Form = observer(() => {
   const customer = customerStore.customer;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
   const [formData, setFormData] = useState<FormDataState>(() => ({
     ...DEFAULT_FORM_DATA,
     ...mapCustomerToFormData(customer),
@@ -60,8 +64,19 @@ const Form = observer(() => {
     try {
       await customerStore.registerCustomer(formData.email, formData.phone);
       console.log('Form submitted:', formData);
+      setNotification({
+        type: 'success',
+        message: 'Клиент успешно зарегистрирован',
+      });
     } catch (error) {
       console.error('Failed to register customer', error);
+      setNotification({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Не удалось зарегистрировать клиента. Попробуйте снова.',
+      });
     }
   };
 
@@ -87,6 +102,30 @@ const Form = observer(() => {
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">
+      {notification && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <p className="mt-2 font-inter text-sm text-[#4B4B4B] text-center">
+                  {notification.message}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setNotification(null)}
+              className="mt-6 w-full rounded-xl bg-[#B50000] px-4 py-2 font-montserrat text-sm font-medium text-white transition-colors hover:bg-[#8F0000] focus:outline-none focus:ring-2 focus:ring-[#B50000]/40"
+            >
+              Закрыть
+            </button>
+          </div>
+        </div>
+      )}
       <div className="w-full max-w-[830px] p-6 sm:p-9 flex flex-col items-center gap-7">
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="font-montserrat text-2xl font-semibold leading-none text-[#1A1A1A]">
