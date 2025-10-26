@@ -1,18 +1,15 @@
 import { observer } from 'mobx-react-lite';
-import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
 
 const Registration = observer(() => {
   const [id, setId] = useState('');
   const customerStore = useCustomerStore();
-  const navigate = useNavigate();
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void customerStore.loadCustomerById(id);
   };
-
   const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
     setId(event.target.value);
     if (customerStore.error) {
@@ -26,14 +23,7 @@ const Registration = observer(() => {
 
   const isLoading = customerStore.isLoading;
   const error = customerStore.error;
-  const customer = customerStore.customer;
   const isSubmitDisabled = isLoading || !id.trim();
-
-  useEffect(() => {
-    if (customer) {
-      navigate('/client/registration-form');
-    }
-  }, [customer, navigate]);
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8">

@@ -56,6 +56,7 @@ export class CustomerService {
 
       runInAction(() => {
         this.customerData = customer;
+        window.location.assign('/client/registration-form');
         this.persistCustomer();
       });
     } catch (error) {
