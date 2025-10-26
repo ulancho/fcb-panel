@@ -71,12 +71,11 @@ const Registration = observer(() => {
           <button
             type="submit"
             disabled={isSubmitDisabled}
-            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-[#B50000] text-white text-sm font-medium leading-[100%] hover:bg-[#9B0000] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
+            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-[#B50000] text-white text-sm font-medium leading-[100%] hover:bg-[#9B0000] disabled:bg-[#9b000080] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
           >
-            Подтвердить
+            {isLoading ? 'Загрузка данных клиента...' : 'Подтвердить'}
           </button>
-          <div className="flex flex-col gap-3 text-sm text-[#232323]">
-            {isLoading && <div>Загрузка данных клиента...</div>}
+          <div className="flex flex-col gap-3 text-sm text-[#232323] text-center">
             {error && <div className="text-[#B50000]">{error}</div>}
           </div>
         </form>
