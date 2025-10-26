@@ -18,9 +18,7 @@ export interface LoginResponse {
 }
 
 const loginClient = axios.create({
-  baseURL:
-    import.meta.env.VITE_KEYCLOAK_BASE_URL ??
-    'https://mobile-test.fkb.kg/keycloak/realms/admin-panel/protocol/openid-connect',
+  baseURL: 'https://mobile-test.fkb.kg/keycloak/realms/admin-panel/protocol/openid-connect',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
@@ -37,10 +35,10 @@ export async function sendLoginRequest({
   password,
 }: LoginRequestPayload): Promise<LoginResponse> {
   const params = new URLSearchParams();
-  params.set('grant_type', import.meta.env.VITE_KEYCLOAK_GRANT_TYPE ?? DEFAULT_GRANT_TYPE);
-  params.set('client_id', import.meta.env.VITE_KEYCLOAK_CLIENT_ID ?? DEFAULT_CLIENT_ID);
-  params.set('client_secret', import.meta.env.VITE_KEYCLOAK_CLIENT_SECRET ?? DEFAULT_CLIENT_SECRET);
-  params.set('scope', import.meta.env.VITE_KEYCLOAK_SCOPE ?? DEFAULT_SCOPE);
+  params.set('grant_type', DEFAULT_GRANT_TYPE);
+  params.set('client_id', DEFAULT_CLIENT_ID);
+  params.set('client_secret', DEFAULT_CLIENT_SECRET);
+  params.set('scope', DEFAULT_SCOPE);
   params.set('username', username);
   params.set('password', password);
 
