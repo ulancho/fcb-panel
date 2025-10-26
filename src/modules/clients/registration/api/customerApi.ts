@@ -1,6 +1,4 @@
-import axios, { AxiosHeaders } from 'axios';
-
-import { getAuthorizationHeaderOrRedirect } from 'Common/auth/tokenStorage.ts';
+import { httpClient } from 'Common/api/httpClient.ts';
 
 export interface CustomerResponse {
   customerId: number;
@@ -23,28 +21,11 @@ export interface RegisterCustomerPayload {
 
 const DEFAULT_CUSTOMER_API_BASE_URL = 'https://mobile-test.fkb.kg/admin-panel/api/v1';
 
-const customerClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? DEFAULT_CUSTOMER_API_BASE_URL,
-  timeout: 30000,
-});
-
-customerClient.interceptors.request.use((config) => {
-  const authorizationHeader = getAuthorizationHeaderOrRedirect();
-
-  if (!authorizationHeader) {
-    return Promise.reject(new axios.CanceledError('Missing auth token. Redirecting to login.'));
-  }
-
-  const headers = config.headers ? AxiosHeaders.from(config.headers) : new AxiosHeaders();
-
-  headers.set('Authorization', authorizationHeader);
-  config.headers = headers;
-
-  return config;
-});
+const CUSTOMER_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? DEFAULT_CUSTOMER_API_BASE_URL;
 
 export async function fetchCustomerById(id: string): Promise<CustomerResponse> {
-  const { data } = await customerClient.get<CustomerResponse>(`/customer/${id}`, {
+  const { data } = await httpClient.get<CustomerResponse>(`/customer/${id}`, {
+    baseURL: CUSTOMER_API_BASE_URL,
     headers: {
       accept: '*/*',
     },
@@ -54,7 +35,8 @@ export async function fetchCustomerById(id: string): Promise<CustomerResponse> {
 }
 
 export async function registerCustomer(payload: RegisterCustomerPayload): Promise<void> {
-  await customerClient.post('/customer/register', payload, {
+  await httpClient.post('/customer/register', payload, {
+    baseURL: CUSTOMER_API_BASE_URL,
     headers: {
       accept: '*/*',
       'Content-Type': 'application/json',
