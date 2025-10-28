@@ -1,6 +1,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
+RUN npm install -g typescript
 RUN npm run build
 
 FROM nginx:1.27-alpine AS production
