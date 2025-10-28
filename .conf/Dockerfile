@@ -1,6 +1,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
+RUN npm install --save-dev @types/node
 RUN npm install -g typescript
 RUN npm run build
 
