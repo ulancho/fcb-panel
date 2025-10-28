@@ -1,0 +1,17 @@
+include:
+  - project: 'fcbank/mobile-app/devops'
+    file: 'main.gitlab-ci.yml'
+    ref: 'main'
+
+build:
+  extends: .builder-kaniko-maven
+  only:
+    - dev
+  variables:
+    DOCKER_FILE: .conf/Dockerfile
+
+deploy-test:
+  extends: .base-test-deploy
+  only:
+    - dev
+  
