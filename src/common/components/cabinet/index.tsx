@@ -4,9 +4,9 @@ import { Sidebar } from 'Common/components/sidebar';
 
 export default function Cabinet() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#EDEEF3]">
+    <div className="flex flex-col min-h-screen bg-[#EDEEF3] pt-[65px]">
       <Header />
-      <div className="flex flex-1">
+      <div className="flex flex-1 h-[calc(100vh-65px)]">
         <div className="hidden lg:block">
           <Sidebar />
         </div>
