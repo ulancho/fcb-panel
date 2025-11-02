@@ -1,174 +1,320 @@
-type Status = 'in-progress' | 'active' | 'cancelled';
+import { useEffect, useMemo, useState } from 'react';
 
-interface ServiceRow {
-  name: string;
-  provider: string;
-  code: string;
-  account: string;
-  status: Status;
-  group: string;
+import { fetchTransactions } from 'Modules/transactions/api/transactionsApi.tsx';
+
+import type {
+  FetchTransactionsParams,
+  SortDirection,
+  TransactionItem,
+} from 'Modules/transactions/api/transactionsApi.tsx';
+
+function formatStatusLabel(status: string | null): string {
+  if (!status) {
+    return 'Неизвестен';
+  }
+
+  return status
+    .toLowerCase()
+    .split('_')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
-const mockData: ServiceRow[] = [
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'in-progress',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'in-progress',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'cancelled',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на кар��у',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-  {
-    name: 'Перевод на карту',
-    provider: 'Элкарт',
-    code: '324',
-    account: '1234',
-    status: 'active',
-    group: 'Платежи',
-  },
-];
+function getStatusAppearance(status: string | null) {
+  const normalized = status?.toLowerCase() ?? '';
 
-const StatusBadge = ({ status }: { status: Status }) => {
-  const statusConfig = {
-    'in-progress': {
-      text: 'В работе',
-      className: 'bg-status-orange-bg border-status-orange-border text-status-orange-text',
-    },
-    active: {
-      text: 'Активен',
-      className: 'bg-status-green-bg border-status-green-border text-status-green',
-    },
-    cancelled: {
-      text: 'Отменен',
-      className: 'bg-status-red-bg border-status-red-border text-status-red',
-    },
+  if (
+    normalized.includes('fail') ||
+    normalized.includes('error') ||
+    normalized.includes('cancel')
+  ) {
+    return {
+      container: 'border-red-200 bg-red-50',
+      text: 'text-red-700',
+    };
+  }
+
+  if (
+    normalized.includes('success') ||
+    normalized.includes('complete') ||
+    normalized.includes('finish')
+  ) {
+    return {
+      container: 'border-emerald-200 bg-emerald-50',
+      text: 'text-emerald-700',
+    };
+  }
+
+  if (normalized.includes('pending') || normalized.includes('progress')) {
+    return {
+      container: 'border-amber-200 bg-amber-50',
+      text: 'text-amber-700',
+    };
+  }
+
+  return {
+    container: 'border-slate-200 bg-slate-50',
+    text: 'text-slate-600',
   };
+}
 
-  const config = statusConfig[status];
+function StatusBadge({ status }: { status: string | null }) {
+  const appearance = useMemo(() => getStatusAppearance(status), [status]);
 
   return (
-    <div className="inline-flex h-7 items-center justify-center rounded-[32px] border px-4 py-1">
-      <span className={`text-sm font-normal leading-none ${config.className}`}>{config.text}</span>
+    <div
+      className={`inline-flex h-7 items-center justify-center rounded-[32px] border px-4 py-1 ${appearance.container}`}
+    >
+      <span className={`text-sm font-medium leading-none ${appearance.text}`}>
+        {formatStatusLabel(status)}
+      </span>
     </div>
   );
-};
+}
+
+function formatDateTime(date: string | null): string {
+  if (!date) {
+    return '—';
+  }
+
+  const parsed = new Date(date);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return '—';
+  }
+
+  return parsed.toLocaleString('ru-RU');
+}
+
+function formatAmount(amount: number | null): string {
+  if (amount === null || amount === undefined) {
+    return '—';
+  }
+
+  return new Intl.NumberFormat('ru-RU', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+function formatString(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === '') {
+    return '—';
+  }
+
+  return String(value);
+}
+
+const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
 export default function Transactions() {
+  const [transactions, setTransactions] = useState<TransactionItem[]>([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const sortBy: FetchTransactionsParams['sortBy'] = 'id';
+  const direction: SortDirection = 'desc';
+
+  useEffect(() => {
+    let isActive = true;
+    const controller = new AbortController();
+
+    async function loadTransactions() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetchTransactions({
+          page,
+          size: pageSize,
+          sortBy,
+          direction,
+          signal: controller.signal,
+        });
+
+        if (!isActive) {
+          return;
+        }
+
+        setTransactions(response.content);
+        setTotalPages(response.totalPages);
+        setTotalElements(response.totalElements);
+      } catch (fetchError) {
+        if (!isActive) {
+          return;
+        }
+
+        if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
+          return;
+        }
+
+        setError('Не удалось загрузить список транзакций. Попробуйте обновить страницу.');
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadTransactions();
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
+  }, [page, pageSize, direction, sortBy]);
+
+  const canGoPrevious = page > 0;
+  const canGoNext = page + 1 < totalPages;
+  const showingFrom = totalElements === 0 ? 0 : page * pageSize + 1;
+  const showingTo = Math.min((page + 1) * pageSize, totalElements);
+
   return (
     <div className="mx-auto h-full">
-      <div className="flex flex-col items-start gap-8 h-full">
+      <div className="flex h-full flex-col items-start gap-8">
         <header>
           <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
         </header>
-        <div className="bg-white p-3 lg:p-3 w-full rounded-[10px] border border-border-primary bg-background-gray h-full">
+        <div className="w-full rounded-[10px] border border-border-primary bg-white p-3 lg:p-3">
           <div className="w-full overflow-x-auto px-2">
-            <div className="min-w-[800px]">
+            <div className="min-w-[1080px]">
               <div className="flex items-center gap-6 border-b border-border-secondary py-3">
-                <div className="w-[164px] text-sm font-semibold leading-none text-text-black">
-                  Наименование
+                <div className="w-[120px] text-sm font-semibold leading-none text-text-black">
+                  ID
                 </div>
-                <div className="w-[180px] px-2 text-sm font-semibold leading-none text-text-black">
-                  Провайдер
+                <div className="w-[200px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Внешний ID
                 </div>
-                <div className="w-[175px] px-2 text-sm font-semibold leading-none text-text-black">
-                  Код
+                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Дата
                 </div>
-                <div className="w-[158px] px-2 text-sm font-semibold leading-none text-text-black">
-                  Счёт
+                <div className="w-[160px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Тип
                 </div>
-                <div className="w-[140px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[150px] px-2 text-sm font-semibold leading-none text-text-black">
                   Статус
                 </div>
+                <div className="w-[130px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Сумма
+                </div>
+                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Счёт списания
+                </div>
+                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Счёт зачисления
+                </div>
                 <div className="flex-1 px-4 text-sm font-semibold leading-none text-text-black">
-                  Группа
+                  Комментарий
                 </div>
               </div>
 
-              {mockData.map((row, index) => (
-                <div key={index}>
-                  <div className="flex items-center gap-6 py-3">
-                    <div className="w-[164px] text-sm font-normal leading-none text-text-black">
-                      {row.name}
-                    </div>
-                    <div className="w-[180px] px-2 text-sm font-normal leading-none text-text-black">
-                      {row.provider}
-                    </div>
-                    <div className="w-[175px] px-2 text-sm font-normal leading-none text-text-black">
-                      {row.code}
-                    </div>
-                    <div className="w-[158px] px-2 text-sm font-normal leading-none text-text-black">
-                      {row.account}
-                    </div>
-                    <div className="w-[140px] px-2">
-                      <StatusBadge status={row.status} />
-                    </div>
-                    <div className="flex flex-1 items-center gap-1 px-4">
-                      <button className="rounded-[32px] px-3 py-2.5 text-sm font-normal leading-none text-text-black hover:bg-gray-100 transition-colors">
-                        {row.group}
-                      </button>
-                    </div>
-                  </div>
-                  {index < mockData.length - 1 && (
-                    <div className="h-px w-full bg-border-secondary" />
-                  )}
+              {loading && (
+                <div className="flex items-center justify-center py-10 text-sm text-text-gray">
+                  Загрузка...
                 </div>
-              ))}
+              )}
+
+              {!loading && error && (
+                <div className="flex items-center justify-center py-10 text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
+              {!loading && !error && transactions.length === 0 && (
+                <div className="flex items-center justify-center py-10 text-sm text-text-gray">
+                  Нет данных для отображения
+                </div>
+              )}
+
+              {!loading &&
+                !error &&
+                transactions.map((transaction) => (
+                  <div key={transaction.id}>
+                    <div className="flex items-center gap-6 py-3">
+                      <div className="w-[120px] text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.transactionID ?? transaction.id)}
+                      </div>
+                      <div className="w-[200px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.externalID)}
+                      </div>
+                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatDateTime(transaction.transactionDate)}
+                      </div>
+                      <div className="w-[160px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.transactionType)}
+                      </div>
+                      <div className="w-[150px] px-2">
+                        <StatusBadge status={transaction.status} />
+                      </div>
+                      <div className="w-[130px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatAmount(transaction.sumN ?? transaction.sumV)}
+                      </div>
+                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.debitAccount)}
+                      </div>
+                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.creditAccount)}
+                      </div>
+                      <div className="flex flex-1 px-4 text-sm font-normal leading-none text-text-black">
+                        {formatString(transaction.comment ?? transaction.serviceName)}
+                      </div>
+                    </div>
+                    <div className="h-px w-full bg-border-secondary" />
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4 text-sm text-text-gray">
+              <label className="flex items-center gap-2">
+                <span>Показывать по:</span>
+                <select
+                  className="rounded-md border border-border-secondary px-2 py-1 text-sm text-text-black"
+                  value={pageSize}
+                  onChange={(event) => {
+                    const newSize = Number.parseInt(event.target.value, 10);
+                    setPageSize(newSize);
+                    setPage(0);
+                  }}
+                >
+                  {PAGE_SIZE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <span>
+                Показано {totalElements === 0 ? 0 : `${showingFrom}–${showingTo}`} из{' '}
+                {totalElements}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="rounded-md border border-border-secondary px-3 py-1 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => setPage((current) => Math.max(current - 1, 0))}
+                disabled={!canGoPrevious || loading}
+              >
+                Назад
+              </button>
+              <span className="text-sm text-text-gray">
+                Страница {totalPages === 0 ? 0 : page + 1} из {totalPages}
+              </span>
+              <button
+                type="button"
+                className="rounded-md border border-border-secondary px-3 py-1 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => setPage((current) => (canGoNext ? current + 1 : current))}
+                disabled={!canGoNext || loading}
+              >
+                Вперёд
+              </button>
             </div>
           </div>
         </div>
