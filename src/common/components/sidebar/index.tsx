@@ -33,7 +33,7 @@ export function Sidebar() {
   const normalizedPathname = location.pathname.replace(/^\//, '');
 
   return (
-    <div className="w-[270px] min-h-screen bg-[#fff] flex flex-col pt-5 pb-5">
+    <div className="w-[270px] bg-[#fff] flex flex-col pt-5 pb-5 h-full">
       <nav className="flex flex-col gap-2">
         {menuItems
           .filter((item) => item.active)

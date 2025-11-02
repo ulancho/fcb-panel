@@ -1,5 +1,3 @@
-type TabType = 'services' | 'operations' | 'quick-transfers';
-
 type Status = 'in-progress' | 'active' | 'cancelled';
 
 interface ServiceRow {
@@ -111,44 +109,68 @@ const StatusBadge = ({ status }: { status: Status }) => {
   );
 };
 
-const TabButton = ({
-  active,
-  children,
-  onClick,
-}: {
-  active: boolean;
-  children: React.ReactNode;
-  onClick: () => void;
-}) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex h-[46px] w-full min-w-[150px] flex-1 items-center justify-center border-b-[1.5px] bg-white px-4 py-2 sm:w-[206px] ${
-        active ? 'border-border-primary-red' : 'border-border-6'
-      }`}
-    >
-      <span
-        className={`text-sm font-semibold leading-none ${
-          active ? 'text-[#B52F27]' : 'text-text-black'
-        }`}
-      >
-        {children}
-      </span>
-    </button>
-  );
-};
-
 export default function Transactions() {
-  // const [activeTab, setActiveTab] = useState<TabType>('services');
-
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col items-start gap-4">
-          <header>
-            <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
-          </header>
-          <div className="min-h-screen bg-white p-4 sm:p-6 md:p-12 lg:p-16 w-full rounded-[10px] border border-border-primary bg-background-gray"></div>
+    <div className="mx-auto h-full">
+      <div className="flex flex-col items-start gap-8 h-full">
+        <header>
+          <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
+        </header>
+        <div className="bg-white p-3 lg:p-3 w-full rounded-[10px] border border-border-primary bg-background-gray h-full">
+          <div className="w-full overflow-x-auto px-2">
+            <div className="min-w-[800px]">
+              <div className="flex items-center gap-6 border-b border-border-secondary py-3">
+                <div className="w-[164px] text-sm font-semibold leading-none text-text-black">
+                  Наименование
+                </div>
+                <div className="w-[180px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Провайдер
+                </div>
+                <div className="w-[175px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Код
+                </div>
+                <div className="w-[158px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Счёт
+                </div>
+                <div className="w-[140px] px-2 text-sm font-semibold leading-none text-text-black">
+                  Статус
+                </div>
+                <div className="flex-1 px-4 text-sm font-semibold leading-none text-text-black">
+                  Группа
+                </div>
+              </div>
+
+              {mockData.map((row, index) => (
+                <div key={index}>
+                  <div className="flex items-center gap-6 py-3">
+                    <div className="w-[164px] text-sm font-normal leading-none text-text-black">
+                      {row.name}
+                    </div>
+                    <div className="w-[180px] px-2 text-sm font-normal leading-none text-text-black">
+                      {row.provider}
+                    </div>
+                    <div className="w-[175px] px-2 text-sm font-normal leading-none text-text-black">
+                      {row.code}
+                    </div>
+                    <div className="w-[158px] px-2 text-sm font-normal leading-none text-text-black">
+                      {row.account}
+                    </div>
+                    <div className="w-[140px] px-2">
+                      <StatusBadge status={row.status} />
+                    </div>
+                    <div className="flex flex-1 items-center gap-1 px-4">
+                      <button className="rounded-[32px] px-3 py-2.5 text-sm font-normal leading-none text-text-black hover:bg-gray-100 transition-colors">
+                        {row.group}
+                      </button>
+                    </div>
+                  </div>
+                  {index < mockData.length - 1 && (
+                    <div className="h-px w-full bg-border-secondary" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

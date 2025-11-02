@@ -6,13 +6,13 @@ export default function Cabinet() {
   return (
     <div className="flex flex-col min-h-screen bg-[#EDEEF3] pt-[65px]">
       <Header />
-      <div className="flex flex-1 h-[calc(100vh-65px)]">
+      <div className="flex flex-1">
         <div className="hidden lg:block">
           <Sidebar />
         </div>
 
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 px-4 py-8">
+        <div className="flex-1 flex flex-col h-[calc(100vh-65px)]">
+          <div className="flex-1 px-[25px] pt-6 overflow-y-auto">
             <AppBody />
           </div>
         </div>
