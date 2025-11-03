@@ -183,10 +183,6 @@ export default function Transactions() {
     setPage(0);
   }
 
-  useEffect(() => {
-    setPage(0);
-  }, [statusFilter, statusNameFilter]);
-
   const canGoPrevious = page > 0;
   const canGoNext = page + 1 < totalPages;
   const showingFrom = totalElements === 0 ? 0 : page * pageSize + 1;
@@ -244,19 +240,28 @@ export default function Transactions() {
               <div className="flex gap-3 sm:ml-auto">
                 <button
                   type="button"
-                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100"
+                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
                   onClick={resetFilters}
                 >
                   Сбросить
                 </button>
                 <button
                   type="button"
-                  className="rounded-md bg-primary-main px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setPage(0);
+                  }}
+                >
+                  Применить
+                </button>
+                <button
+                  type="button"
+                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
                     setFiltersVisible(false);
                   }}
                 >
-                  Применить
+                  Закрыть
                 </button>
               </div>
             </div>
