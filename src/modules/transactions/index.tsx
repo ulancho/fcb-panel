@@ -179,35 +179,35 @@ export default function Transactions() {
         <header>
           <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
         </header>
-        <div className="w-full rounded-[10px] border border-border-primary bg-white p-3 lg:p-3">
+        <div className="w-full rounded-[10px] border border-border-primary overflow-y-auto overflow-x-scroll bg-white p-3 lg:p-3">
           <div className="w-full overflow-x-auto px-2">
             <div className="min-w-[1080px]">
               <div className="flex items-center gap-6 border-b border-border-secondary py-3">
                 <div className="w-[120px] text-sm font-semibold leading-none text-text-black">
                   ID
                 </div>
-                <div className="w-[200px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[200px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Внешний ID
                 </div>
-                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Дата
                 </div>
-                <div className="w-[160px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[160px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Тип
                 </div>
-                <div className="w-[150px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[150px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Статус
                 </div>
-                <div className="w-[130px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[130px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Сумма
                 </div>
-                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Счёт списания
                 </div>
-                <div className="w-[170px] px-2 text-sm font-semibold leading-none text-text-black">
+                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
                   Счёт зачисления
                 </div>
-                <div className="flex-1 px-4 text-sm font-semibold leading-none text-text-black">
+                <div className="flex flex-1 flex-shrink-0 px-4 text-sm font-semibold leading-none text-text-black">
                   Комментарий
                 </div>
               </div>
@@ -235,28 +235,28 @@ export default function Transactions() {
                 transactions.map((transaction) => (
                   <div key={transaction.id}>
                     <div className="flex items-center gap-6 py-3">
-                      <div className="w-[120px] text-sm font-normal leading-none text-text-black">
+                      <div className="w-[120px] flex-shrink-0 text-sm font-normal leading-none text-text-black">
                         {formatString(transaction.transactionID ?? transaction.id)}
                       </div>
-                      <div className="w-[200px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[200px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatString(transaction.externalID)}
                       </div>
-                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatDateTime(transaction.transactionDate)}
                       </div>
-                      <div className="w-[160px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[160px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatString(transaction.transactionType)}
                       </div>
-                      <div className="w-[150px] px-2">
+                      <div className="w-[150px] flex-shrink-0 px-2">
                         <StatusBadge status={transaction.status} />
                       </div>
-                      <div className="w-[130px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[130px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatAmount(transaction.sumN ?? transaction.sumV)}
                       </div>
-                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatString(transaction.debitAccount)}
                       </div>
-                      <div className="w-[170px] px-2 text-sm font-normal leading-none text-text-black">
+                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
                         {formatString(transaction.creditAccount)}
                       </div>
                       <div className="flex flex-1 px-4 text-sm font-normal leading-none text-text-black">
