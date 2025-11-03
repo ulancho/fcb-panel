@@ -1,0 +1,9 @@
+export const STATUS_OPTIONS = [
+  'REGISTERED',
+  'ABS_REQUEST_FAILED',
+  'PROCEEDED',
+  'FAILED',
+  'NOT_FINISHED',
+];
+
+export const PAGE_SIZE_OPTIONS = [10, 20, 50];

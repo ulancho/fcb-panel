@@ -1,6 +1,8 @@
+import { ListFilterPlus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { fetchTransactions } from 'Modules/transactions/api/transactionsApi.tsx';
+import { PAGE_SIZE_OPTIONS, STATUS_OPTIONS } from 'Modules/transactions/constants';
 
 import type {
   FetchTransactionsParams,
@@ -106,8 +108,6 @@ function formatString(value: string | number | null | undefined): string {
   return String(value);
 }
 
-const PAGE_SIZE_OPTIONS = [10, 20, 50];
-
 export default function Transactions() {
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
   const [page, setPage] = useState(0);
@@ -116,6 +116,9 @@ export default function Transactions() {
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [statusNameFilter, setStatusNameFilter] = useState('');
   const sortBy: FetchTransactionsParams['sortBy'] = 'id';
   const direction: SortDirection = 'desc';
 
@@ -133,6 +136,8 @@ export default function Transactions() {
           size: pageSize,
           sortBy,
           direction,
+          status: statusFilter,
+          statusName: statusNameFilter || null,
           signal: controller.signal,
         });
 
@@ -166,7 +171,21 @@ export default function Transactions() {
       isActive = false;
       controller.abort();
     };
-  }, [page, pageSize, direction, sortBy]);
+  }, [page, pageSize, direction, sortBy, statusFilter, statusNameFilter]);
+
+  function toggleFiltersVisibility() {
+    setFiltersVisible((current) => !current);
+  }
+
+  function resetFilters() {
+    setStatusFilter(null);
+    setStatusNameFilter('');
+    setPage(0);
+  }
+
+  useEffect(() => {
+    setPage(0);
+  }, [statusFilter, statusNameFilter]);
 
   const canGoPrevious = page > 0;
   const canGoNext = page + 1 < totalPages;
@@ -176,9 +195,73 @@ export default function Transactions() {
   return (
     <div className="mx-auto h-full max-w-[100%]">
       <div className="flex h-full flex-col items-start gap-8">
-        <header>
+        <header className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
+          <button
+            type="button"
+            className="flex gap-2 w-full border rounded border-amber-950 px-4 py-2 transition-colors hover:bg-gray-100 sm:w-auto cursor-pointer"
+            onClick={toggleFiltersVisibility}
+          >
+            <ListFilterPlus className="w-4" />
+            <p className="text-sm font-medium text-text-black">Фильтр</p>
+          </button>
         </header>
+        {filtersVisible && (
+          <div className="w-full rounded-[10px] border border-border-primary bg-white p-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
+              <label className="flex flex-col gap-2 text-sm text-text-black">
+                <span className="text-xs font-semibold uppercase text-text-gray">Статус</span>
+                <select
+                  className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                  value={statusFilter ?? ''}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setStatusFilter(value === '' ? null : value);
+                  }}
+                >
+                  <option value="">Все статусы</option>
+                  {STATUS_OPTIONS.map((status) => (
+                    <option key={status} value={status}>
+                      {formatStatusLabel(status)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-2 text-sm text-text-black">
+                <span className="text-xs font-semibold uppercase text-text-gray">
+                  Название статуса
+                </span>
+                <input
+                  type="text"
+                  className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                  placeholder="Введите название статуса"
+                  value={statusNameFilter}
+                  onChange={(event) => {
+                    setStatusNameFilter(event.target.value);
+                  }}
+                />
+              </label>
+              <div className="flex gap-3 sm:ml-auto">
+                <button
+                  type="button"
+                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100"
+                  onClick={resetFilters}
+                >
+                  Сбросить
+                </button>
+                <button
+                  type="button"
+                  className="rounded-md bg-primary-main px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+                  onClick={() => {
+                    setFiltersVisible(false);
+                  }}
+                >
+                  Применить
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="w-full rounded-[10px] border border-border-primary overflow-x-auto bg-white p-3 lg:p-3">
           <div className="w-full overflow-x-auto px-2">
             <div className="flex gap-6 py-3 border-b border-border-secondary">

@@ -43,6 +43,8 @@ export interface FetchTransactionsParams {
   size?: number;
   sortBy?: string;
   direction?: SortDirection;
+  status?: string | null;
+  statusName?: string | null;
   signal?: AbortSignal;
 }
 
@@ -55,6 +57,8 @@ export async function fetchTransactions({
   size = 10,
   sortBy = 'id',
   direction = 'desc',
+  status,
+  statusName,
   signal,
 }: FetchTransactionsParams = {}): Promise<TransactionsResponse> {
   const { data } = await httpClient.get<TransactionsResponse>('/service/transactions', {
@@ -64,6 +68,8 @@ export async function fetchTransactions({
       size,
       sortBy,
       direction,
+      status: status ?? undefined,
+      statusName: statusName ?? undefined,
     },
     headers: {
       accept: '*/*',
