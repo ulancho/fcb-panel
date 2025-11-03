@@ -11,10 +11,8 @@ export default function Cabinet() {
           <Sidebar />
         </div>
 
-        <div className="flex-1 flex flex-col h-[calc(100vh-65px)]">
-          <div className="flex-1 px-[25px] pt-6 overflow-y-auto">
-            <AppBody />
-          </div>
+        <div className="flex-1 flex flex-col px-[25px] pt-6 h-[calc(100vh-80px)] overflow-hidden">
+          <AppBody />
         </div>
       </div>
     </div>

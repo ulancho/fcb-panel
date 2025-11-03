@@ -174,99 +174,88 @@ export default function Transactions() {
   const showingTo = Math.min((page + 1) * pageSize, totalElements);
 
   return (
-    <div className="mx-auto h-full">
+    <div className="mx-auto h-full max-w-[100%]">
       <div className="flex h-full flex-col items-start gap-8">
         <header>
           <h1 className="text-2xl font-bold leading-none text-text-black">Транзакции</h1>
         </header>
-        <div className="w-full rounded-[10px] border border-border-primary overflow-y-auto overflow-x-scroll bg-white p-3 lg:p-3">
+        <div className="w-full rounded-[10px] border border-border-primary overflow-x-auto bg-white p-3 lg:p-3">
           <div className="w-full overflow-x-auto px-2">
-            <div className="min-w-[1080px]">
-              <div className="flex items-center gap-6 border-b border-border-secondary py-3">
-                <div className="w-[120px] text-sm font-semibold leading-none text-text-black">
-                  ID
-                </div>
-                <div className="w-[200px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Внешний ID
-                </div>
-                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Дата
-                </div>
-                <div className="w-[160px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Тип
-                </div>
-                <div className="w-[150px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Статус
-                </div>
-                <div className="w-[130px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Сумма
-                </div>
-                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Счёт списания
-                </div>
-                <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
-                  Счёт зачисления
-                </div>
-                <div className="flex flex-1 flex-shrink-0 px-4 text-sm font-semibold leading-none text-text-black">
-                  Комментарий
-                </div>
+            <div className="flex gap-6 py-3 border-b border-border-secondary">
+              <div className="w-[120px] flex-shrink-0 text-sm font-semibold leading-none text-text-black">
+                ID
               </div>
-
-              {loading && (
-                <div className="flex items-center justify-center py-10 text-sm text-text-gray">
-                  Загрузка...
-                </div>
-              )}
-
-              {!loading && error && (
-                <div className="flex items-center justify-center py-10 text-sm text-red-600">
-                  {error}
-                </div>
-              )}
-
-              {!loading && !error && transactions.length === 0 && (
-                <div className="flex items-center justify-center py-10 text-sm text-text-gray">
-                  Нет данных для отображения
-                </div>
-              )}
-
-              {!loading &&
-                !error &&
-                transactions.map((transaction) => (
-                  <div key={transaction.id}>
-                    <div className="flex items-center gap-6 py-3">
-                      <div className="w-[120px] flex-shrink-0 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.transactionID ?? transaction.id)}
-                      </div>
-                      <div className="w-[200px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.externalID)}
-                      </div>
-                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatDateTime(transaction.transactionDate)}
-                      </div>
-                      <div className="w-[160px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.transactionType)}
-                      </div>
-                      <div className="w-[150px] flex-shrink-0 px-2">
-                        <StatusBadge status={transaction.status} />
-                      </div>
-                      <div className="w-[130px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatAmount(transaction.sumN ?? transaction.sumV)}
-                      </div>
-                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.debitAccount)}
-                      </div>
-                      <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.creditAccount)}
-                      </div>
-                      <div className="flex flex-1 px-4 text-sm font-normal leading-none text-text-black">
-                        {formatString(transaction.comment ?? transaction.serviceName)}
-                      </div>
-                    </div>
-                    <div className="h-px w-full bg-border-secondary" />
-                  </div>
-                ))}
+              <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Дата
+              </div>
+              <div className="w-[160px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Тип
+              </div>
+              <div className="w-[150px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Статус
+              </div>
+              <div className="w-[130px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Сумма
+              </div>
+              <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Счёт списания
+              </div>
+              <div className="w-[170px] flex-shrink-0 px-2 text-sm font-semibold leading-none text-text-black">
+                Счёт зачисления
+              </div>
+              <div className="flex flex-1 flex-shrink-0 px-4 text-sm font-semibold leading-none text-text-black">
+                Комментарий
+              </div>
             </div>
+
+            {loading && (
+              <div className="flex items-center justify-center py-10 text-sm text-text-gray">
+                Загрузка...
+              </div>
+            )}
+
+            {!loading && error && (
+              <div className="flex items-center justify-center py-10 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+
+            {!loading && !error && transactions.length === 0 && (
+              <div className="flex items-center justify-center py-10 text-sm text-text-gray">
+                Нет данных для отображения
+              </div>
+            )}
+
+            {!loading &&
+              !error &&
+              transactions.map((transaction) => (
+                <div key={transaction.id} className="flex items-center gap-6 py-3">
+                  <div className="w-[120px] flex-shrink-0 text-sm font-normal leading-none text-text-black">
+                    {formatString(transaction.transactionID ?? transaction.id)}
+                  </div>
+                  <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
+                    {formatDateTime(transaction.transactionDate)}
+                  </div>
+                  <div className="w-[160px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
+                    {formatString(transaction.transactionType)}
+                  </div>
+                  <div className="w-[150px] flex-shrink-0 px-2">
+                    <StatusBadge status={transaction.status} />
+                  </div>
+                  <div className="w-[130px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
+                    {formatAmount(transaction.sumN ?? transaction.sumV)}
+                  </div>
+                  <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
+                    {formatString(transaction.debitAccount)}
+                  </div>
+                  <div className="w-[170px] flex-shrink-0 px-2 text-sm font-normal leading-none text-text-black">
+                    {formatString(transaction.creditAccount)}
+                  </div>
+                  <div className="flex flex-1 px-4 text-sm font-normal leading-none text-text-black">
+                    {formatString(transaction.comment ?? transaction.serviceName)}
+                  </div>
+                </div>
+              ))}
           </div>
 
           <div className="mt-6 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
