@@ -49,6 +49,8 @@ export interface FetchTransactionsParams {
   debitAccount?: string | null;
   transactionType?: string | null;
   customerId?: string | null;
+  deviceId?: string | null;
+  absId?: string | null;
   signal?: AbortSignal;
 }
 
@@ -67,6 +69,7 @@ export async function fetchTransactions({
   debitAccount,
   transactionType,
   customerId,
+  absId,
   signal,
 }: FetchTransactionsParams = {}): Promise<TransactionsResponse> {
   const { data } = await httpClient.get<TransactionsResponse>('/service/transactions', {
@@ -82,6 +85,7 @@ export async function fetchTransactions({
       debitAccount: debitAccount ?? undefined,
       transactionType: transactionType ?? undefined,
       customerId: customerId ?? undefined,
+      absId: absId ?? undefined,
     },
     headers: {
       accept: '*/*',

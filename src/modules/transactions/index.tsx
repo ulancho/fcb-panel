@@ -38,6 +38,8 @@ interface FiltersState {
   debitAccount: string;
   transactionType: string;
   customerId: string;
+  deviceId: string;
+  absId: string;
 }
 
 function createInitialFiltersState(): FiltersState {
@@ -48,6 +50,8 @@ function createInitialFiltersState(): FiltersState {
     debitAccount: '',
     transactionType: '',
     customerId: '',
+    deviceId: '',
+    absId: '',
   };
 }
 
@@ -89,6 +93,8 @@ export default function Transactions() {
           debitAccount: appliedFilters.debitAccount || null,
           transactionType: appliedFilters.transactionType || null,
           customerId: appliedFilters.customerId || null,
+          deviceId: appliedFilters.deviceId || null,
+          absId: appliedFilters.absId || null,
           signal: controller.signal,
         });
 
@@ -261,6 +267,38 @@ export default function Transactions() {
                       setFilters((current) => ({
                         ...current,
                         customerId: value,
+                      }));
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">
+                    ID устройства
+                  </span>
+                  <input
+                    type="number"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={filters.deviceId}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        deviceId: value,
+                      }));
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">АБС ID</span>
+                  <input
+                    type="number"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={filters.absId}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        absId: value,
                       }));
                     }}
                   />
