@@ -31,6 +31,26 @@ function StatusBadge({ status }: { status: string | null }) {
   );
 }
 
+interface FiltersState {
+  status: string | null;
+  serviceName: string;
+  creditAccount: string;
+  debitAccount: string;
+  transactionType: string;
+  customerId: string;
+}
+
+function createInitialFiltersState(): FiltersState {
+  return {
+    status: null,
+    serviceName: '',
+    creditAccount: '',
+    debitAccount: '',
+    transactionType: '',
+    customerId: '',
+  };
+}
+
 export default function Transactions() {
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
   const [page, setPage] = useState(0);
@@ -41,12 +61,10 @@ export default function Transactions() {
   const [error, setError] = useState<string | null>(null);
   const [filtersVisible, setFiltersVisible] = useState(false);
   //поля фильтрации
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [serviceNameFilter, setServiceNameFilter] = useState('');
-  const [creditAccountFilter, setCreditAccountFilter] = useState('');
-  const [debitAccountFilter, setDebitAccountFilter] = useState('');
-  const [transactionTypeFilter, setTransactionTypeFilter] = useState('');
-  const [customerIdFilter, setCustomerIdFilter] = useState('');
+  const [filters, setFilters] = useState<FiltersState>(() => createInitialFiltersState());
+  const [appliedFilters, setAppliedFilters] = useState<FiltersState>(() =>
+    createInitialFiltersState(),
+  );
 
   const sortBy: FetchTransactionsParams['sortBy'] = 'id';
   const direction: SortDirection = 'desc';
@@ -65,12 +83,12 @@ export default function Transactions() {
           size: pageSize,
           sortBy,
           direction,
-          status: statusFilter,
-          serviceName: serviceNameFilter || null,
-          creditAccount: creditAccountFilter || null,
-          debitAccount: debitAccountFilter || null,
-          transactionType: transactionTypeFilter || null,
-          customerId: customerIdFilter || null,
+          status: appliedFilters.status,
+          serviceName: appliedFilters.serviceName || null,
+          creditAccount: appliedFilters.creditAccount || null,
+          debitAccount: appliedFilters.debitAccount || null,
+          transactionType: appliedFilters.transactionType || null,
+          customerId: appliedFilters.customerId || null,
           signal: controller.signal,
         });
 
@@ -104,15 +122,21 @@ export default function Transactions() {
       isActive = false;
       controller.abort();
     };
-  }, [page, pageSize, statusFilter, serviceNameFilter, creditAccountFilter]);
+  }, [page, pageSize, appliedFilters, direction, sortBy]);
 
   function toggleFiltersVisibility() {
     setFiltersVisible((current) => !current);
   }
 
   function resetFilters() {
-    setStatusFilter(null);
-    setServiceNameFilter('');
+    const defaultFilters = createInitialFiltersState();
+    setFilters(defaultFilters);
+    setAppliedFilters(defaultFilters);
+    setPage(0);
+  }
+
+  function applyFilters() {
+    setAppliedFilters({ ...filters });
     setPage(0);
   }
 
@@ -143,10 +167,13 @@ export default function Transactions() {
                   <span className="text-xs font-semibold uppercase text-text-gray">Статус</span>
                   <select
                     className="rounded-md border border-border-secondary px-3 py-2  text-sm text-text-black"
-                    value={statusFilter ?? ''}
+                    value={filters.status ?? ''}
                     onChange={(event) => {
                       const value = event.target.value;
-                      setStatusFilter(value === '' ? null : value);
+                      setFilters((current) => ({
+                        ...current,
+                        status: value === '' ? null : value,
+                      }));
                     }}
                   >
                     <option value="">Все статусы</option>
@@ -164,9 +191,13 @@ export default function Transactions() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                    value={serviceNameFilter}
+                    value={filters.serviceName}
                     onChange={(event) => {
-                      setServiceNameFilter(event.target.value);
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        serviceName: value,
+                      }));
                     }}
                   />
                 </label>
@@ -177,9 +208,13 @@ export default function Transactions() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                    value={creditAccountFilter}
+                    value={filters.creditAccount}
                     onChange={(event) => {
-                      setCreditAccountFilter(event.target.value);
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        creditAccount: value,
+                      }));
                     }}
                   />
                 </label>
@@ -190,9 +225,13 @@ export default function Transactions() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                    value={debitAccountFilter}
+                    value={filters.debitAccount}
                     onChange={(event) => {
-                      setDebitAccountFilter(event.target.value);
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        debitAccount: value,
+                      }));
                     }}
                   />
                 </label>
@@ -201,9 +240,13 @@ export default function Transactions() {
                   <input
                     type="number"
                     className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                    value={transactionTypeFilter}
+                    value={filters.transactionType}
                     onChange={(event) => {
-                      setTransactionTypeFilter(event.target.value);
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        transactionType: value,
+                      }));
                     }}
                   />
                 </label>
@@ -212,9 +255,13 @@ export default function Transactions() {
                   <input
                     type="number"
                     className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                    value={customerIdFilter}
+                    value={filters.customerId}
                     onChange={(event) => {
-                      setCustomerIdFilter(event.target.value);
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        customerId: value,
+                      }));
                     }}
                   />
                 </label>
@@ -230,9 +277,7 @@ export default function Transactions() {
                 <button
                   type="button"
                   className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    setPage(0);
-                  }}
+                  onClick={applyFilters}
                 >
                   Применить
                 </button>
