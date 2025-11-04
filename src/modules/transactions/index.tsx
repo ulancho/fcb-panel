@@ -118,7 +118,11 @@ export default function Transactions() {
   const [error, setError] = useState<string | null>(null);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [statusNameFilter, setStatusNameFilter] = useState('');
+  const [serviceNameFilter, setServiceNameFilter] = useState('');
+  const [creditAccountFilter, setCreditAccountFilter] = useState('');
+  const [debitAccountFilter, setDebitAccountFilter] = useState('');
+  const [transactionTypeFilter, setTransactionTypeFilter] = useState('');
+  const [customerIdFilter, setCustomerIdFilter] = useState('');
   const sortBy: FetchTransactionsParams['sortBy'] = 'id';
   const direction: SortDirection = 'desc';
 
@@ -137,7 +141,11 @@ export default function Transactions() {
           sortBy,
           direction,
           status: statusFilter,
-          statusName: statusNameFilter || null,
+          serviceName: serviceNameFilter || null,
+          creditAccount: creditAccountFilter || null,
+          debitAccount: debitAccountFilter || null,
+          transactionType: transactionTypeFilter || null,
+          customerId: customerIdFilter || null,
           signal: controller.signal,
         });
 
@@ -171,7 +179,7 @@ export default function Transactions() {
       isActive = false;
       controller.abort();
     };
-  }, [page, pageSize, direction, sortBy, statusFilter, statusNameFilter]);
+  }, [page, pageSize, statusFilter, serviceNameFilter, creditAccountFilter]);
 
   function toggleFiltersVisibility() {
     setFiltersVisible((current) => !current);
@@ -179,7 +187,7 @@ export default function Transactions() {
 
   function resetFilters() {
     setStatusFilter(null);
-    setStatusNameFilter('');
+    setServiceNameFilter('');
     setPage(0);
   }
 
@@ -204,39 +212,88 @@ export default function Transactions() {
         </header>
         {filtersVisible && (
           <div className="w-full rounded-[10px] border border-border-primary bg-white p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
-              <label className="flex flex-col gap-2 text-sm text-text-black">
-                <span className="text-xs font-semibold uppercase text-text-gray">Статус</span>
-                <select
-                  className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                  value={statusFilter ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setStatusFilter(value === '' ? null : value);
-                  }}
-                >
-                  <option value="">Все статусы</option>
-                  {STATUS_OPTIONS.map((status) => (
-                    <option key={status} value={status}>
-                      {formatStatusLabel(status)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="flex flex-col gap-2 text-sm text-text-black">
-                <span className="text-xs font-semibold uppercase text-text-gray">
-                  Название статуса
-                </span>
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
-                  placeholder="Введите название статуса"
-                  value={statusNameFilter}
-                  onChange={(event) => {
-                    setStatusNameFilter(event.target.value);
-                  }}
-                />
-              </label>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-6">
+              <div className="flex flex-wrap gap-4">
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">Статус</span>
+                  <select
+                    className="rounded-md border border-border-secondary px-3 py-2  text-sm text-text-black"
+                    value={statusFilter ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setStatusFilter(value === '' ? null : value);
+                    }}
+                  >
+                    <option value="">Все статусы</option>
+                    {STATUS_OPTIONS.map((status) => (
+                      <option key={status} value={status}>
+                        {formatStatusLabel(status)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">
+                    Название статуса
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={serviceNameFilter}
+                    onChange={(event) => {
+                      setServiceNameFilter(event.target.value);
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">
+                    Счет списания
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={creditAccountFilter}
+                    onChange={(event) => {
+                      setCreditAccountFilter(event.target.value);
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">
+                    Счет пополнения
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={debitAccountFilter}
+                    onChange={(event) => {
+                      setDebitAccountFilter(event.target.value);
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">Транзакция</span>
+                  <input
+                    type="number"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={transactionTypeFilter}
+                    onChange={(event) => {
+                      setTransactionTypeFilter(event.target.value);
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">ID клиента</span>
+                  <input
+                    type="number"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={customerIdFilter}
+                    onChange={(event) => {
+                      setCustomerIdFilter(event.target.value);
+                    }}
+                  />
+                </label>
+              </div>
               <div className="flex gap-3 sm:ml-auto">
                 <button
                   type="button"
