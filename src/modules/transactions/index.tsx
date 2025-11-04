@@ -9,6 +9,7 @@ import {
   formatStatusLabel,
   formatString,
   getStatusAppearance,
+  normalizeDateTimeFilterValue,
 } from 'Modules/transactions/utils';
 
 import type {
@@ -40,6 +41,8 @@ interface FiltersState {
   customerId: string;
   deviceId: string;
   absId: string;
+  startDate: string;
+  endDate: string;
 }
 
 function createInitialFiltersState(): FiltersState {
@@ -52,6 +55,8 @@ function createInitialFiltersState(): FiltersState {
     customerId: '',
     deviceId: '',
     absId: '',
+    startDate: '',
+    endDate: '',
   };
 }
 
@@ -95,6 +100,8 @@ export default function Transactions() {
           customerId: appliedFilters.customerId || null,
           deviceId: appliedFilters.deviceId || null,
           absId: appliedFilters.absId || null,
+          startDate: normalizeDateTimeFilterValue(appliedFilters.startDate),
+          endDate: normalizeDateTimeFilterValue(appliedFilters.endDate),
           signal: controller.signal,
         });
 
@@ -299,6 +306,38 @@ export default function Transactions() {
                       setFilters((current) => ({
                         ...current,
                         absId: value,
+                      }));
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">Дата от</span>
+                  <input
+                    type="datetime-local"
+                    step="1"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={filters.startDate}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        startDate: value,
+                      }));
+                    }}
+                  />
+                </label>
+                <label className="flex flex-col gap-2 text-sm text-text-black">
+                  <span className="text-xs font-semibold uppercase text-text-gray">Дата до</span>
+                  <input
+                    type="datetime-local"
+                    step="1"
+                    className="w-full rounded-md border border-border-secondary px-3 py-2 text-sm text-text-black"
+                    value={filters.endDate}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((current) => ({
+                        ...current,
+                        endDate: value,
                       }));
                     }}
                   />

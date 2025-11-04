@@ -81,3 +81,19 @@ export function formatString(value: string | number | null | undefined): string 
 
   return String(value);
 }
+
+export function normalizeDateTimeFilterValue(value: string): string | null {
+  if (!value) {
+    return null;
+  }
+
+  if (value.length === 16) {
+    return `${value}:00`;
+  }
+
+  if (value.length >= 19) {
+    return value.slice(0, 19);
+  }
+
+  return value;
+}
