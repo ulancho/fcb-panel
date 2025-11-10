@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Registration from 'Modules/clients/registration';
 import Form from 'Modules/clients/registration/Form.tsx';
+import Limits from 'Modules/limits';
 import Transactions from 'Modules/transactions';
 
 export const AppBody = () => {
@@ -10,6 +11,7 @@ export const AppBody = () => {
       <Route path="/client/registration" element={<Registration />} />
       <Route path="/client/registration-form" element={<Form />} />
       <Route path="/transactions" element={<Transactions />} />
+      <Route path="/limits" element={<Limits />} />
     </Routes>
   );
 };

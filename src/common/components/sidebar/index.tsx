@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileEdit, CreditCard } from 'lucide-react';
+import { LayoutDashboard, FileEdit, CreditCard, ListChecks } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from 'Common/lib/utils';
@@ -27,10 +27,17 @@ const menuItems: MenuItem[] = [
     active: true,
   },
   {
-    id: 'registration',
+    id: 'transactions',
     label: 'Транзакции',
     icon: <CreditCard className="w-5 h-5" />,
     path: 'transactions',
+    active: true,
+  },
+  {
+    id: 'limits',
+    label: 'Лимиты',
+    icon: <ListChecks className="w-5 h-5" />,
+    path: 'limits',
     active: true,
   },
 ];
