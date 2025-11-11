@@ -103,7 +103,10 @@ export default function Limits() {
             {!loading &&
               !error &&
               limits.map((limit) => (
-                <div key={limit.id} className="flex items-center gap-6 py-3">
+                <div
+                  key={limit.id}
+                  className="flex items-center gap-6 py-3 transition-colors hover:bg-gray-100 cursor-pointer"
+                >
                   <div className="w-[80px] flex-shrink-0 text-sm font-normal leading-none text-text-black">
                     {formatString(limit.id)}
                   </div>
