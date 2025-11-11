@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchLimits, type TransactionLimit } from 'Modules/limits/api/limitsApi.tsx';
 import { formatString } from 'Modules/transactions/utils';
 
 export default function Limits() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [limits, setLimits] = useState<TransactionLimit[]>([]);
 
   useEffect(() => {
     let isActive = true;
-    const controller = new AbortController();
 
     async function loadTransactions() {
       setLoading(true);
@@ -29,10 +30,6 @@ export default function Limits() {
           return;
         }
 
-        if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
-          return;
-        }
-
         setError('Не удалось загрузить список лимитов. Попробуйте обновить страницу.');
       } finally {
         if (isActive) {
@@ -45,7 +42,6 @@ export default function Limits() {
 
     return () => {
       isActive = false;
-      controller.abort();
     };
   }, []);
 
@@ -57,8 +53,9 @@ export default function Limits() {
           <button
             type="button"
             className="flex gap-2 w-full border rounded border-amber-950 px-4 py-2 transition-colors hover:bg-gray-100 sm:w-auto cursor-pointer"
+            onClick={() => navigate('/limits/create')}
           >
-            <p className="text-sm font-medium text-text-black">Создать</p>
+            <span className="text-sm font-medium text-text-black">Создать</span>
           </button>
         </header>
 
