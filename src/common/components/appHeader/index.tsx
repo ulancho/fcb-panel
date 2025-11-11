@@ -1,5 +1,6 @@
 import { LogOut } from 'lucide-react';
 
+import logoUrl from 'Assets/logo.svg';
 import { useCustomerStore, useLoginStore } from 'Common/stores/rootStore.tsx';
 
 export function Header() {
@@ -14,7 +15,7 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 w-full h-[65px] bg-[#fff] border-b border-[#D7D7D7] flex items-center px-10">
       <div className="mr-auto flex gap-2.5 items-center">
-        <img src="/src/assets/logo.svg" alt="logo" />
+        <img src={logoUrl} alt="logo" />
         <p>ФинансКредитБанк</p>
       </div>
       <div className="ml-auto">
