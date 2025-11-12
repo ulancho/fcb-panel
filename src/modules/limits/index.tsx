@@ -106,6 +106,7 @@ export default function Limits() {
                 <div
                   key={limit.id}
                   className="flex items-center gap-6 py-3 transition-colors hover:bg-gray-100 cursor-pointer"
+                  onDoubleClick={() => navigate(`/limits/${limit.id}`)}
                 >
                   <div className="w-[80px] flex-shrink-0 text-sm font-normal leading-none text-text-black">
                     {formatString(limit.id)}

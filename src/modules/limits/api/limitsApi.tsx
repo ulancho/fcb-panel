@@ -53,6 +53,20 @@ export async function fetchTransactionTypes(): Promise<TransactionType[]> {
   return data;
 }
 
+export async function fetchLimit(limitId: number): Promise<TransactionLimit> {
+  const { data } = await httpClient.get<TransactionLimit>(
+    `/service/transactions/limits/${limitId}`,
+    {
+      baseURL: API_BASE_URL,
+      headers: {
+        accept: '*/*',
+      },
+    },
+  );
+
+  return data;
+}
+
 export async function createTransactionLimit(payload: CreateLimitPayload): Promise<void> {
   await httpClient.post('/service/transactions/limits', payload, {
     baseURL: API_BASE_URL,
