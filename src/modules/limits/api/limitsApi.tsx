@@ -75,3 +75,12 @@ export async function createTransactionLimit(payload: CreateLimitPayload): Promi
     },
   });
 }
+
+export async function deleteTransactionLimit(limitId: number): Promise<void> {
+  await httpClient.delete(`/service/transactions/limits/${limitId}`, {
+    baseURL: API_BASE_URL,
+    headers: {
+      accept: '*/*',
+    },
+  });
+}
