@@ -119,7 +119,7 @@ export default function ViewLimit() {
             </button>
             <h1 className="text-2xl font-bold leading-none text-text-black">Просмотр лимита</h1>
           </div>
-          {!limit && (
+          {limit && (
             <button
               type="button"
               onClick={handleDelete}
