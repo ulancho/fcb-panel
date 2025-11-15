@@ -120,30 +120,52 @@ export default function ViewLimit() {
             <h1 className="text-2xl font-bold leading-none text-text-black">Просмотр лимита</h1>
           </div>
           {limit && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={deleteLoading}
-              className="flex cursor-pointer h-10 items-center gap-2 self-start rounded-lg bg-[#B50000] px-4 text-sm font-medium text-white transition-colors hover:bg-[#990000] disabled:cursor-not-allowed disabled:bg-[#B50000]/60 sm:self-auto"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5"
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => navigate(`/limits/${limit.id}/edit`)}
+                className="flex h-10 items-center gap-2 rounded-lg bg-[#00439d] border border-border-secondary px-4 text-sm font-medium text-white transition-colors hover:bg-[#05387d] cursor-pointer"
               >
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
-              {deleteLoading ? 'Удаление...' : 'Удалить'}
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+                Редактировать
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+                className="flex cursor-pointer h-10 items-center gap-2 rounded-lg bg-[#B50000] px-4 text-sm font-medium text-white transition-colors hover:bg-[#990000] disabled:cursor-not-allowed disabled:bg-[#B50000]/60"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+                {deleteLoading ? 'Удаление...' : 'Удалить'}
+              </button>
+            </div>
           )}
         </header>
 
