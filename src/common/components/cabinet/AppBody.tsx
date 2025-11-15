@@ -6,6 +6,7 @@ import Limits from 'Modules/limits';
 import CreateLimit from 'Modules/limits/CreateLimit.tsx';
 import EditLimit from 'Modules/limits/EditLimit.tsx';
 import ViewLimit from 'Modules/limits/ViewLimit.tsx';
+import Reports from 'Modules/reports';
 import Transactions from 'Modules/transactions';
 
 export const AppBody = () => {
@@ -18,6 +19,7 @@ export const AppBody = () => {
       <Route path="/limits/create" element={<CreateLimit />} />
       <Route path="/limits/:id/edit" element={<EditLimit />} />
       <Route path="/limits/:id" element={<ViewLimit />} />
+      <Route path="/reports" element={<Reports />} />
     </Routes>
   );
 };
