@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { STATUS_OPTIONS } from 'Modules/transactions/constants';
-import { formatStatusLabel } from 'Modules/transactions/utils';
+import { fetchStatuses, type StatusOption } from 'Modules/transactions/api/transactionsApi.tsx';
 import { downloadBlobFile } from 'Modules/transactions/utils/downloadBlob';
 
 import { downloadFile } from './api/reportsApi';
+
 
 interface Filters {
   status: string | null;
@@ -36,6 +36,16 @@ export default function Reports() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusOptions, setStatusOptions] = useState<StatusOption[]>([]);
+
+  useEffect(() => {
+    async function loadStatuses() {
+      const statuses = await fetchStatuses();
+      setStatusOptions(statuses);
+    }
+
+    void loadStatuses();
+  }, []);
 
   const resetFilters = () => {
     setFilters(initialFilters);
@@ -100,9 +110,9 @@ export default function Reports() {
                     onChange={(e) => setFilters((c) => ({ ...c, status: e.target.value || null }))}
                   >
                     <option value="">Все статусы</option>
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>
-                        {formatStatusLabel(s)}
+                    {statusOptions.map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
                       </option>
                     ))}
                   </select>

@@ -1,8 +1,8 @@
 import { ListFilterPlus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { fetchTransactions } from 'Modules/transactions/api/transactionsApi.tsx';
-import { PAGE_SIZE_OPTIONS, STATUS_OPTIONS } from 'Modules/transactions/constants';
+import { fetchTransactions, fetchStatuses } from 'Modules/transactions/api/transactionsApi.tsx';
+import { PAGE_SIZE_OPTIONS } from 'Modules/transactions/constants';
 import {
   formatAmount,
   formatDateTime,
@@ -16,6 +16,7 @@ import type {
   FetchTransactionsParams,
   SortDirection,
   TransactionItem,
+  StatusOption,
 } from 'Modules/transactions/api/transactionsApi.tsx';
 
 function StatusBadge({ status }: { status: string | null }) {
@@ -78,6 +79,8 @@ export default function Transactions() {
   const sortBy: FetchTransactionsParams['sortBy'] = 'id';
   const direction: SortDirection = 'desc';
 
+  const [statusOptions, setStatusOptions] = useState<StatusOption[]>([]);
+
   useEffect(() => {
     let isActive = true;
     const controller = new AbortController();
@@ -130,6 +133,13 @@ export default function Transactions() {
     }
 
     void loadTransactions();
+
+    async function loadStatuses() {
+      const statuses = await fetchStatuses();
+      setStatusOptions(statuses);
+    }
+
+    void loadStatuses();
 
     return () => {
       isActive = false;
@@ -190,9 +200,9 @@ export default function Transactions() {
                     }}
                   >
                     <option value="">Все статусы</option>
-                    {STATUS_OPTIONS.map((status) => (
-                      <option key={status} value={status}>
-                        {formatStatusLabel(status)}
+                    {statusOptions.map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
                       </option>
                     ))}
                   </select>

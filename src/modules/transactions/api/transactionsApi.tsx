@@ -56,6 +56,18 @@ export interface FetchTransactionsParams {
   signal?: AbortSignal;
 }
 
+export interface StatusResponseItem {
+  name: string;
+  value: string;
+}
+
+export type TransactionStatus = string;
+
+export type StatusOption = {
+  value: string;
+  label: string;
+};
+
 const DEFAULT_TRANSACTIONS_API_BASE_URL = 'https://mobile-test.fkb.kg/admin-panel/api/v1';
 const TRANSACTIONS_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? DEFAULT_TRANSACTIONS_API_BASE_URL;
@@ -102,4 +114,21 @@ export async function fetchTransactions({
   });
 
   return data;
+}
+
+export async function fetchStatuses(): Promise<StatusOption[]> {
+  try {
+    const { data } = await httpClient.get<StatusResponseItem[]>('/service/transactions/statuses', {
+      baseURL: TRANSACTIONS_API_BASE_URL,
+      headers: { accept: '*/*' },
+    });
+
+    return data.map((item) => ({
+      value: item.value,
+      label: item.name,
+    }));
+  } catch (error) {
+    console.error('Ошибка загрузки статусов:', error);
+    return [];
+  }
 }
