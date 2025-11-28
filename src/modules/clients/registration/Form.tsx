@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { NotificationModal } from 'Common/components/notificationModal';
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
@@ -38,6 +39,7 @@ const mapCustomerToFormData = (customer: CustomerResponse | null): Partial<FormD
 });
 
 const Form = observer(() => {
+  const navigate = useNavigate();
   const customerStore = useCustomerStore();
   const customer = customerStore.customer;
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +104,7 @@ const Form = observer(() => {
   );
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-8">
+    <div className="mx-auto h-full w-full">
       {notification && (
         <NotificationModal
           type={notification.type}
@@ -110,205 +112,231 @@ const Form = observer(() => {
           onClose={() => setNotification(null)}
         />
       )}
-      <div className="w-full max-w-[830px] p-6 sm:p-9 flex flex-col items-center gap-7">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="font-montserrat text-2xl font-semibold leading-none text-[#1A1A1A]">
-            Регистрация клиента в МП
-          </h1>
-          <p className="font-inter text-lg font-normal leading-[26px] text-[#737373]">
-            Данные клиента
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-x-10 gap-y-4 mb-10">
-            <div className="flex flex-col gap-2" ref={dropdownRef}>
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">
-                Статус резидентства
-              </label>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="w-full h-12 px-4 flex items-center justify-between font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl hover:border-[#B50000]/50 focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                >
-                  <span>{formData.residencyStatus}</span>
-                  <svg
-                    className={`w-5 h-5 text-[#737373] transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                    />
-                  </svg>
-                </button>
-
-                {isOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl shadow-lg z-10 overflow-hidden">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleInputChange('residencyStatus', 'Резидент');
-                        setIsOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left font-montserrat text-base font-normal text-[#232323] hover:bg-[#B50000]/10 active:bg-[#B50000]/20 transition-colors flex items-center gap-2"
-                    >
-                      {formData.residencyStatus === 'Резидент' && (
-                        <svg
-                          className="w-5 h-5 text-[#B50000]"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span>Резидент</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleInputChange('residencyStatus', 'Не резидент');
-                        setIsOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left font-montserrat text-base font-normal text-[#232323] hover:bg-[#B50000]/10 active:bg-[#B50000]/20 transition-colors flex items-center gap-2 border-t border-[#D7D7D7]"
-                    >
-                      {formData.residencyStatus === 'Не резидент' && (
-                        <svg
-                          className="w-5 h-5 text-[#B50000]"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span>Не резидент</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">Имя</label>
-              <div className="relative">
-                <input
-                  readOnly
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">ИНН</label>
-              <div className="relative">
-                <input
-                  readOnly
-                  type="text"
-                  value={formData.inn}
-                  onChange={(e) => handleInputChange('inn', e.target.value)}
-                  className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">Фамилия</label>
-              <div className="relative">
-                <input
-                  readOnly
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">
-                Номер телефона
-              </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full h-12 px-4 pr-12 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <AttachmentIcon />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">Отчество</label>
-              <div className="relative">
-                <input
-                  readOnly
-                  type="text"
-                  value={formData.patronymic}
-                  onChange={(e) => handleInputChange('patronymic', e.target.value)}
-                  className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">Почта</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full h-12 px-4 pr-12 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <AttachmentIcon />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-montserrat text-sm font-normal text-[#23262F]">
-                Дата рождения
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.birthDate}
-                  onChange={(e) => handleInputChange('birthDate', e.target.value)}
-                  className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
+      <div className="flex h-full flex-col items-start gap-8">
+        <header className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border-primary text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
+            >
+              <span className="sr-only">Назад</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <h1 className="text-2xl font-bold leading-none text-text-black">
+              Регистрация клиента в МП
+            </h1>
           </div>
+        </header>
 
-          <button
-            type="submit"
-            className="w-full h-12 px-6 flex items-center justify-center gap-2 bg-[#B50000] hover:bg-[#9a0000] active:bg-[#8a0000] rounded-xl font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
-          >
-            Подтвердить
-          </button>
-        </form>
+        <div className="w-full max-w-3xl rounded-[10px] border border-border-primary bg-white p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="flex flex-col gap-2" ref={dropdownRef}>
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">
+                  Статус резидентства
+                </label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full h-12 px-4 flex items-center justify-between font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl hover:border-[#B50000]/50 focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  >
+                    <span>{formData.residencyStatus}</span>
+                    <svg
+                      className={`w-5 h-5 text-[#737373] transition-transform duration-200 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                      />
+                    </svg>
+                  </button>
+
+                  {isOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl shadow-lg z-10 overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleInputChange('residencyStatus', 'Резидент');
+                          setIsOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left font-montserrat text-base font-normal text-[#232323] hover:bg-[#B50000]/10 active:bg-[#B50000]/20 transition-colors flex items-center gap-2"
+                      >
+                        {formData.residencyStatus === 'Резидент' && (
+                          <svg
+                            className="w-5 h-5 text-[#B50000]"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        <span>Резидент</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleInputChange('residencyStatus', 'Не резидент');
+                          setIsOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left font-montserrat text-base font-normal text-[#232323] hover:bg-[#B50000]/10 active:bg-[#B50000]/20 transition-colors flex items-center gap-2 border-t border-[#D7D7D7]"
+                      >
+                        {formData.residencyStatus === 'Не резидент' && (
+                          <svg
+                            className="w-5 h-5 text-[#B50000]"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        <span>Не резидент</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">Имя</label>
+                <div className="relative">
+                  <input
+                    readOnly
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">ИНН</label>
+                <div className="relative">
+                  <input
+                    readOnly
+                    type="text"
+                    value={formData.inn}
+                    onChange={(e) => handleInputChange('inn', e.target.value)}
+                    className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">
+                  Фамилия
+                </label>
+                <div className="relative">
+                  <input
+                    readOnly
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">
+                  Номер телефона
+                </label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className="w-full h-12 px-4 pr-12 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <AttachmentIcon />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">
+                  Отчество
+                </label>
+                <div className="relative">
+                  <input
+                    readOnly
+                    type="text"
+                    value={formData.patronymic}
+                    onChange={(e) => handleInputChange('patronymic', e.target.value)}
+                    className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">Почта</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="w-full h-12 px-4 pr-12 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <AttachmentIcon />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-montserrat text-sm font-normal text-[#23262F]">
+                  Дата рождения
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.birthDate}
+                    onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                    className="w-full h-12 px-4 font-montserrat text-base font-normal text-[#232323] bg-[#FCFCFC] border border-[#D7D7D7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="submit"
+                className="w-full h-12 px-6 flex items-center justify-center gap-2 bg-[#B50000] hover:bg-[#9a0000] active:bg-[#8a0000] rounded-xl font-montserrat text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#B50000] focus:ring-offset-2 cursor-pointer"
+              >
+                Подтвердить
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
