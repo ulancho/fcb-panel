@@ -1,16 +1,6 @@
 @import "tailwindcss";
 @import "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap";
-
-body {
-    margin: 0;
-    font-family:
-            Roboto,
-            sans-serif;
-    font-size: 14px;
-    text-rendering: optimizelegibility;
-}
 
 @layer base {
     :root {
@@ -90,6 +80,7 @@ body {
 @layer base {
     * {
         border-color: hsl(var(--border));
+        font-family: Montserrat, sans-serif;
     }
 
     body {
