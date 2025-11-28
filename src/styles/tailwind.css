@@ -106,5 +106,4 @@
 /* Базовая раскраска страницы + шрифт по умолчанию */
 body {
     @apply bg-background text-foreground;
-    font-family: var(--font-inter);
 }
