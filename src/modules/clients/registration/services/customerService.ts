@@ -109,11 +109,33 @@ export class CustomerService {
       throw new Error('Customer ID is not available.');
     }
 
-    await this.customerRegistrar({
-      customerId: String(customerId),
-      email: email.trim(),
-      phoneNumber: phoneNumber.trim(),
-    });
+    try {
+      await this.customerRegistrar({
+        customerId: String(customerId),
+        email: email.trim(),
+        phoneNumber: phoneNumber.trim(),
+      });
+    } catch (error) {
+      let message = 'Не удалось зарегистрировать клиента. Попробуйте снова.';
+
+      if (isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        if (responseData && typeof responseData === 'object') {
+          const responseMessage = (responseData as { message?: string }).message;
+
+          if (typeof responseMessage === 'string' && responseMessage.trim()) {
+            message = responseMessage;
+          }
+        } else if (typeof error.message === 'string' && error.message.trim()) {
+          message = error.message;
+        }
+      } else if (error instanceof Error && error.message.trim()) {
+        message = error.message;
+      }
+
+      throw new Error(message);
+    }
   }
 
   private hydrateCustomer() {
