@@ -1,17 +1,38 @@
 import { observer } from 'mobx-react-lite';
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react';
 
 import { useCustomerStore } from 'Common/stores/rootStore.tsx';
+
+const REGISTRATION_ID_STORAGE_KEY = 'client-registration/id';
 
 const Registration = observer(() => {
   const [id, setId] = useState('');
   const customerStore = useCustomerStore();
+
+  useEffect(() => {
+    const storedId = window.localStorage.getItem(REGISTRATION_ID_STORAGE_KEY);
+
+    if (storedId) {
+      setId(storedId);
+    }
+  }, []);
+
+  const persistId = (value: string) => {
+    if (value.trim()) {
+      window.localStorage.setItem(REGISTRATION_ID_STORAGE_KEY, value);
+    } else {
+      window.localStorage.removeItem(REGISTRATION_ID_STORAGE_KEY);
+    }
+  };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void customerStore.loadCustomerById(id);
   };
   const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setId(event.target.value);
+    const value = event.target.value;
+
+    setId(value);
+    persistId(value);
     if (customerStore.error) {
       customerStore.clearError();
     }
