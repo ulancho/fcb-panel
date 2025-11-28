@@ -1,5 +1,5 @@
+import { AppBody } from '@/app/AppBody.tsx';
 import { Header } from 'Common/components/appHeader';
-import { AppBody } from 'Common/components/cabinet/AppBody.tsx';
 import { Sidebar } from 'Common/components/sidebar';
 
 export default function Cabinet() {
