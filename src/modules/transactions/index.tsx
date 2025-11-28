@@ -353,31 +353,31 @@ export default function Transactions() {
                   />
                 </label>
               </div>
-              <div className="flex gap-3 sm:ml-auto">
-                <button
-                  type="button"
-                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
-                  onClick={resetFilters}
-                >
-                  Сбросить
-                </button>
-                <button
-                  type="button"
-                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
-                  onClick={applyFilters}
-                >
-                  Применить
-                </button>
-                <button
-                  type="button"
-                  className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    setFiltersVisible(false);
-                  }}
-                >
-                  Закрыть
-                </button>
-              </div>
+            </div>
+            <div className="flex gap-3 mt-3.5">
+              <button
+                type="button"
+                className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
+                onClick={resetFilters}
+              >
+                Сбросить
+              </button>
+              <button
+                type="button"
+                className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
+                onClick={applyFilters}
+              >
+                Применить
+              </button>
+              <button
+                type="button"
+                className="rounded-md border border-border-secondary px-4 py-2 text-sm font-medium text-text-black transition-colors hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setFiltersVisible(false);
+                }}
+              >
+                Закрыть
+              </button>
             </div>
           </div>
         )}
